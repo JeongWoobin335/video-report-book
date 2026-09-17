@@ -27,7 +27,7 @@ from llm import Gemini, LLMError  # noqa: E402
 
 JOBS_DIR = Path(os.environ.get("JOBS_DIR", ROOT / "data" / "jobs"))
 RETENTION_HOURS = float(os.environ.get("RETENTION_HOURS", 24))     # 이 시간이 지난 작업은 지운다
-DAILY_JOB_LIMIT = int(os.environ.get("DAILY_JOB_LIMIT", 10))       # 하루에 받는 작업 수 (모든 사용자 합쳐서)
+DAILY_JOB_LIMIT = int(os.environ.get("DAILY_JOB_LIMIT", 30))       # 하루에 받는 작업 수 (모든 사용자 합쳐서)
 MAX_MINUTES = float(os.environ.get("MAX_MINUTES", 30))            # 받는 영상의 최대 길이
 MAX_FRAMES = int(os.environ.get("MAX_FRAMES", 40))
 
