@@ -72,7 +72,17 @@ function initUpload() {
   $("consent").addEventListener("change", refreshStart);
   $("start").addEventListener("click", () => start().catch(fail));
 
-  api("/api/health").then((h) => {
+  // 무료 서버는 한동안 요청이 없으면 잠든다. 깨어날 때까지(1분쯤) 안내를 띄우고 몇 번 다시 물어본다.
+  const waking = setTimeout(() => { if (!limits) $("quota").textContent = "서버를 깨우는 중입니다. 1분쯤 걸릴 수 있습니다…"; }, 2000);
+  const health = async (tries) => {
+    try { return await api("/api/health"); } catch (e) {
+      if (tries <= 1) throw e;
+      await new Promise((r) => setTimeout(r, 10000));
+      return health(tries - 1);
+    }
+  };
+  health(8).then((h) => {
+    clearTimeout(waking);
     limits = h;
     $("retention").textContent = h.limits.retention_hours;
     $("quota").textContent = h.today.left > 0
