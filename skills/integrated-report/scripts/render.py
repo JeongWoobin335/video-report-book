@@ -74,7 +74,8 @@ def main():
             if open_section:
                 body.append("</section>")
             cls = SECTION_CLASS.get(sec["heading"], "")
-            body.append(f'<section class="{cls}"><h2>{html.escape(sec["heading"])}</h2>')
+            sid = sum(1 for x in body if x.startswith("<section")) + 1  # 바깥 화면의 목차가 이 id로 찾아온다 (s1, s2, …)
+            body.append(f'<section class="{cls}" id="s{sid}"><h2>{html.escape(sec["heading"])}</h2>')
             if sec["heading"] in SECTION_NOTE:
                 body.append(f'<p class="note">{SECTION_NOTE[sec["heading"]]}</p>')
             open_section = True

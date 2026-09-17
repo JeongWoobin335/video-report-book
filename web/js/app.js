@@ -20,6 +20,7 @@ let serverReady = null;  // 서버가 깨어나 /api/health에 답하면 풀리�
 
 function show(view) {
   for (const v of ["view-upload", "view-progress", "view-result"]) $(v).hidden = v !== view;
+  if (view === "view-progress") startTips();
   window.scrollTo(0, 0);
 }
 
@@ -227,6 +228,20 @@ async function follow(jobId, local) {
   }
 }
 
+// 만드는 동안(1~4분) 서비스가 무엇을 하는지 한 줄씩 보여 준다
+let tipTimer = null;
+function startTips() {
+  if (tipTimer) return;
+  let n = 0;
+  const el = $("making-tip");
+  el.textContent = WAKE_TIPS[0];
+  tipTimer = setInterval(() => {
+    n += 1;
+    el.classList.add("swap");
+    setTimeout(() => { el.textContent = WAKE_TIPS[n % (WAKE_TIPS.length - 1)]; el.classList.remove("swap"); }, 250);  // 마지막 팁("영상을 골라 두세요")은 여기서는 맞지 않는다
+  }, 7000);
+}
+
 // ── 3. 결과 ──────────────────────────────────────────────────────────────
 function seekTo(t) {
   const player = $("player");
@@ -260,6 +275,8 @@ function showResult(status, demo = false) {
   $("tabs").innerHTML = tabs.map((t, i) => `<button data-key="${t.key}" class="${i ? "" : "on"}">${t.label}</button>`).join("") +
     (status.outputs.includes("report") ? `<a class="pdf" href="${base}report.html" target="_blank" rel="noopener">리포트 PDF로 저장 ↗</a>` : "");
 
+  if (status.outputs.includes("report")) buildToc(base, () => open("report")).catch(() => {});
+
   let quizLoaded = false;
   const open = (key) => {
     const tab = tabs.find((t) => t.key === key);
@@ -289,6 +306,37 @@ function gradeLocally(quiz, answers) {
   spans.forEach((sp) => { sp.label = `${mmss(sp.start)}–${mmss(sp.end)}`; });
   return { total: items.length, correct: items.filter((r) => r.correct).length, items, review_spans: spans,
            review_seconds: spans.reduce((n, sp) => n + sp.end - sp.start, 0) };
+}
+
+// 영상 아래의 목차: 리포트의 섹션과 그 대목이 시작하는 시각. 누르면 영상도 문서도 그리로 간다.
+async function buildToc(base, openReport) {
+  const report = await fetch(base + "report.json").then((r) => { if (!r.ok) throw new Error(); return r.json(); });
+  const rows = [];
+  let top = 0;
+  for (const sec of report.sections) {
+    const times = (sec.items || []).flatMap((it) => (it.timestamps || []).map((t) => t.start));
+    if (sec.level === 2) { top += 1; rows.push({ name: sec.heading, section: top, t: times.length ? Math.min(...times) : null, sub: false }); }
+    else if (rows.length) {
+      rows.push({ name: sec.heading, section: top, t: times.length ? Math.min(...times) : null, sub: true });
+    }
+  }
+  // 하위 제목만 시각을 가진 큰 섹션은 첫 하위 제목의 시각을 물려받는다
+  rows.forEach((r, i) => { if (!r.sub && r.t === null) { const k = rows.slice(i + 1).find((x) => x.sub && x.section === r.section && x.t !== null); if (k) r.t = k.t; } });
+  if (!rows.length) return;
+  const toc = $("toc");
+  toc.innerHTML = '<p class="toc-title">목차</p>' + rows.map((r, i) =>
+    `<button type="button" class="${r.sub ? "sub" : ""}" data-i="${i}"><span class="name">${esc(r.name)}</span>${r.t === null ? "" : `<span class="t">${mmss(r.t)}</span>`}</button>`).join("");
+  toc.hidden = false;
+  toc.onclick = (e) => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    const r = rows[Number(b.dataset.i)];
+    openReport();
+    const send = () => $("doc").contentWindow.postMessage({ type: "goto", section: r.section }, "*");
+    send();
+    setTimeout(send, 600);  // 방금 리포트 탭으로 돌아온 경우: 문서가 뜬 뒤 한 번 더
+    if (r.t !== null && !$("player").hidden) seekTo(r.t);
+  };
 }
 
 async function loadQuiz(status, demo) {
