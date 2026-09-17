@@ -61,4 +61,4 @@ python <이 스킬>/scripts/build_comic.py <작업 폴더>
 
 ## 그림을 바꾸고 싶을 때
 
-캐릭터의 생김새는 `assets/cast.json`(색, 머리 모양, 표정 목록)과 `assets/characters.js`(그리는 코드)에 있다. 스토리보드 형식은 그대로 두고 이 둘만 바꾸면 그림체가 바뀐다. 컷을 AI 이미지로 만드는 방식으로 바꾸더라도 `comic.json`의 구조(컷별 장면·인물·대사·근거)는 그대로 입력이 된다.
+캐릭터의 생김새는 `assets/cast.json`(머리, 표정별 얼굴과 포즈, 후광 색), `assets/peeps/`(Open Peeps 그림 파츠, CC0), `assets/characters.js`(파츠를 겹쳐 그리는 코드)에 있다. 스토리보드 형식은 그대로 두고 이 둘만 바꾸면 그림체가 바뀐다. 컷을 AI 이미지로 만드는 방식으로 바꾸더라도 `comic.json`의 구조(컷별 장면·인물·대사·근거)는 그대로 입력이 된다.
