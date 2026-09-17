@@ -4,6 +4,7 @@
 읽는 것: comic-draft.md, report.json, (있으면) screens.json과 frames/    쓰는 것: comic.json, comic.html
 오류가 있으면 아무것도 쓰지 않고 종료 코드 1.
 """
+import base64
 import json
 import re
 import sys
@@ -12,6 +13,7 @@ from pathlib import Path
 ASSETS = Path(__file__).resolve().parent.parent / "assets"
 NO_USE_SECTIONS = {"영상 속 자료와 발언이 다른 부분"}  # 다툼의 여지가 있는 내용은 만화에 넣지 않는다
 MAX_BUBBLE = 40
+SAME_MOOD = 3  # 같은 사람이 같은 표정으로 이어져도 되는 컷 수
 PANELS = (4, 10)
 BACKGROUNDS = {"사무실": "office", "없음": "plain"}
 
@@ -166,6 +168,15 @@ def main():
 
     if not errors and sum(1 for p in out if p["background"]["kind"] == "screen") > 0.75 * len(out):
         warnings.append("거의 모든 컷이 화면 배경입니다. 대화·반응 컷을 섞으면 덜 단조롭습니다.")
+    # 표정이 곧 포즈다 — 같은 사람이 같은 표정으로 오래 이어지면 같은 그림이 계속 찍힌다
+    streak = {}
+    for p in out:
+        for a in p["people"]:
+            last = streak.get(a["name"])
+            streak[a["name"]] = (a["mood"], last[1] + 1 if last and last[0] == a["mood"] else 1, last[2] if last and last[0] == a["mood"] else p["n"])
+            mood, count, since = streak[a["name"]]
+            if count == SAME_MOOD + 1:
+                warnings.append(f"[컷 {since}~{p['n']}] '{a['name']}'가 {count}컷째 같은 표정({mood})입니다. 같은 그림이 이어집니다 — 흐름에 맞게 표정을 바꾸세요 (think, happy, worried, neutral 등).")
     for w in warnings:
         print("경고:", w)
     if errors:
@@ -184,11 +195,22 @@ def main():
     page = page.replace("{{title}}", comic["title"].replace("<", "&lt;"))
     page = page.replace("{{characters_js}}", (ASSETS / "characters.js").read_text(encoding="utf-8"))
     page = page.replace("{{cast_json}}", json.dumps(cast, ensure_ascii=False))
+    page = page.replace("{{parts_json}}", json.dumps(used_parts(cast, comic), ensure_ascii=False))
     page = page.replace("{{comic_json}}", json.dumps(comic, ensure_ascii=False).replace("</", "<\\/"))
     (work / "comic.html").write_text(page, encoding="utf-8")
     print(f"컷 {len(out)}개, 경고 {len(warnings)}개")
     print(work / "comic.json")
     print(work / "comic.html")
+
+
+def used_parts(cast, comic):
+    """이 만화에 나오는 (캐릭터, 표정) 조합에 필요한 그림 파츠만 data URI로 묶는다 → comic.html 한 파일로 열린다."""
+    keys = set()
+    for p in comic["panels"]:
+        for a in p["people"]:
+            c, m = cast["characters"][a["character"]], cast["moods"].get(a["mood"]) or cast["moods"]["neutral"]
+            keys |= {"body/" + c["bodies"].get(a["mood"], c["bodies"]["default"]), "head/" + c["head"], "face/" + m["face"]}
+    return {k: "data:image/svg+xml;base64," + base64.b64encode((ASSETS / "peeps" / f"{k}.svg").read_bytes()).decode() for k in sorted(keys)}
 
 
 if __name__ == "__main__":
