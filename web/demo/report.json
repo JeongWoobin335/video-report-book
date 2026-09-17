@@ -1,0 +1,331 @@
+{
+  "title": "HTTP 캐싱 기초",
+  "type": "education",
+  "duration": 257.6,
+  "summary": "웹 성능의 기본인 HTTP 캐싱의 원리와 제어 방법을 다루는 강의다. 캐시를 활용해 사용자 페이지 로딩 속도를 높이고 서버 부하와 비용을 줄이는 원리를 설명한다. Cache-Control 헤더의 max-age, no-cache, no-store 설정과 ETag를 이용한 저장본 유효성 검증 방식을 학습하며, 실무에서 파일 유형별로 권장되는 캐싱 전략을 제시한다.",
+  "sections": [
+    {
+      "heading": "학습 목표",
+      "level": 2,
+      "items": [
+        {
+          "id": "p1",
+          "text": "응답 헤더만 보고도 리소스가 브라우저에서 어떻게 캐시될지 동작을 설명할 수 있다.",
+          "timestamps": [
+            {
+              "start": 22,
+              "end": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "핵심 개념",
+      "level": 2,
+      "items": [
+        {
+          "id": "p2",
+          "text": "**캐시(Cache)** — 한 번 받아온 응답의 복사본을 가까운 곳에 저장해 두었다가 같은 요청이 오면 서버까지 가지 않고 그 복사본을 돌려주는 것.",
+          "timestamps": [
+            {
+              "start": 32,
+              "end": null
+            }
+          ]
+        },
+        {
+          "id": "p3",
+          "text": "**ETag** — 서버가 리소스 내용에 붙이는 지문 같은 값으로, 내용이 한 글자라도 바뀌면 함께 변경되는 식별자.",
+          "timestamps": [
+            {
+              "start": 161,
+              "end": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "내용 정리",
+      "level": 2,
+      "items": []
+    },
+    {
+      "heading": "캐시의 필요성",
+      "level": 3,
+      "items": [
+        {
+          "id": "p4",
+          "text": "페이지를 열 때마다 매번 서버에서 새로 받는 것은 낭비다.",
+          "timestamps": [
+            {
+              "start": 3,
+              "end": null
+            }
+          ]
+        },
+        {
+          "id": "p5",
+          "text": "사용자 관점 도입 이유: 페이지 로딩 속도가 빨라진다.",
+          "timestamps": [
+            {
+              "start": 47,
+              "end": null
+            }
+          ]
+        },
+        {
+          "id": "p6",
+          "text": "서버 관점 도입 이유: 요청 수가 줄어들어 서버의 부하와 비용이 낮아진다.",
+          "timestamps": [
+            {
+              "start": 47,
+              "end": null
+            }
+          ]
+        },
+        {
+          "id": "p7",
+          "text": "예시: 쇼핑몰 첫 화면의 로고처럼 몇 달에 한 번 바뀔까 말까 한 자원은 브라우저 디스크에 저장해 두고 다음 요청부터 재사용한다.",
+          "timestamps": [
+            {
+              "start": 56,
+              "end": 76
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "Cache-Control 헤더를 통한 캐시 제어",
+      "level": 3,
+      "items": [
+        {
+          "id": "p8",
+          "text": "브라우저는 서버가 보내 주는 응답 헤더인 `Cache-Control`을 통해 저장본을 언제까지 쓸 수 있는지 확인한다.",
+          "timestamps": [
+            {
+              "start": 83,
+              "end": null
+            }
+          ]
+        },
+        {
+          "id": "p9",
+          "text": "`max-age`는 응답을 몇 초 동안 신선(fresh)한 것으로 볼지 초 단위로 지정하는 가장 중요한 값이다.",
+          "timestamps": [
+            {
+              "start": 89,
+              "end": null
+            }
+          ]
+        },
+        {
+          "id": "p10",
+          "text": "`max-age` 기간 동안 브라우저는 네트워크 요청을 보내지 않고 서버에 묻지도 않은 채 저장본을 그대로 쓴다. (→ 영상 속 자료와 발언이 다른 부분 참고)",
+          "timestamps": [
+            {
+              "start": 103,
+              "end": 108
+            }
+          ]
+        },
+        {
+          "id": "p11",
+          "text": "슬라이드에만 있음: `s-maxage=N`은 CDN이나 프록시와 같은 공유 캐시 전용 `max-age` 설정이다.",
+          "timestamps": [
+            {
+              "start": 78,
+              "end": null
+            }
+          ]
+        },
+        {
+          "id": "p12",
+          "text": "`no-cache` — 저장함 — 사용할 때마다 서버에 유효한지 반드시 확인",
+          "timestamps": [
+            {
+              "start": 124,
+              "end": null
+            }
+          ],
+          "fields": {
+            "지시어": "`no-cache`",
+            "저장 여부": "저장함",
+            "동작 및 용도": "사용할 때마다 서버에 유효한지 반드시 확인"
+          }
+        },
+        {
+          "id": "p13",
+          "text": "`no-store` — 저장 안 함 — 디스크에 남기지 않음 (은행 거래 내역 등 민감한 응답)",
+          "timestamps": [
+            {
+              "start": 135,
+              "end": 140
+            }
+          ],
+          "fields": {
+            "지시어": "`no-store`",
+            "저장 여부": "저장 안 함",
+            "동작 및 용도": "디스크에 남기지 않음 (은행 거래 내역 등 민감한 응답)"
+          }
+        },
+        {
+          "id": "p14",
+          "text": "주의: `no-cache`는 이름과 달리 캐시를 전혀 안 한다는 뜻이 아니며, 저장은 하되 매번 서버에 검증하는 설정이다.",
+          "timestamps": [
+            {
+              "start": 118,
+              "end": 124
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "ETag를 이용한 저장본 유효성 검증",
+      "level": 3,
+      "items": [
+        {
+          "id": "p15",
+          "text": "1단계: 첫 요청 시 서버가 응답 본문과 함께 `ETag`를 브라우저에 내려준다.",
+          "timestamps": [
+            {
+              "start": 172,
+              "end": null
+            }
+          ]
+        },
+        {
+          "id": "p16",
+          "text": "2단계: 재요청 시 검증이 필요해지면 브라우저가 `If-None-Match` 헤더에 기존 `ETag` 값을 담아 서버에 보낸다.",
+          "timestamps": [
+            {
+              "start": 180,
+              "end": null
+            }
+          ]
+        },
+        {
+          "id": "p17",
+          "text": "3단계 (일치): 서버에서 리소스의 `ETag`가 동일하면 본문 없이 `304 Not Modified`만 응답하며, 브라우저는 가벼워진 응답을 확인하고 저장본을 쓴다.",
+          "timestamps": [
+            {
+              "start": 191,
+              "end": 200
+            }
+          ]
+        },
+        {
+          "id": "p18",
+          "text": "3단계 (불일치): 내용이 바뀌어 `ETag`가 다르면 서버는 `200 OK` 응답과 함께 새 본문 및 새 `ETag`를 내려준다.",
+          "timestamps": [
+            {
+              "start": 206,
+              "end": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "실무 캐싱 전략",
+      "level": 3,
+      "items": [
+        {
+          "id": "p19",
+          "text": "예시: 파일 이름에 고유 해시가 들어가는 자바스크립트나 CSS 파일(`app.3f9a1c.js`)은 내용 변경 시 파일명이 바뀌므로 `max-age=31536000`(1년)으로 길게 준다.",
+          "timestamps": [
+            {
+              "start": 211,
+              "end": 220
+            }
+          ]
+        },
+        {
+          "id": "p20",
+          "text": "예시: `index.html` 문서는 새로 배포했을 때 사용자가 즉시 최신 버전을 받도록 `Cache-Control: no-cache`를 설정하는 것이 일반적이다.",
+          "timestamps": [
+            {
+              "start": 225,
+              "end": 230
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "정리",
+      "level": 2,
+      "items": [
+        {
+          "id": "p21",
+          "text": "캐시는 복사본을 가까이 두는 것이다.",
+          "timestamps": [
+            {
+              "start": 237,
+              "end": null
+            }
+          ]
+        },
+        {
+          "id": "p22",
+          "text": "`max-age`는 신선한 기간을 지정한다.",
+          "timestamps": [
+            {
+              "start": 237,
+              "end": null
+            }
+          ]
+        },
+        {
+          "id": "p23",
+          "text": "`no-cache`는 매번 검증, `no-store`는 저장 금지를 의미한다.",
+          "timestamps": [
+            {
+              "start": 237,
+              "end": null
+            }
+          ]
+        },
+        {
+          "id": "p24",
+          "text": "`ETag`와 `304` 응답을 통해 본문 전송 없이 유효성을 검증한다.",
+          "timestamps": [
+            {
+              "start": 237,
+              "end": null
+            }
+          ]
+        },
+        {
+          "id": "p25",
+          "text": "다음 시간에는 CDN 캐시를 다룬다.",
+          "timestamps": [
+            {
+              "start": 251,
+              "end": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "영상 속 자료와 발언이 다른 부분",
+      "level": 2,
+      "items": [
+        {
+          "id": "p26",
+          "text": "`max-age=3600`의 기간: 슬라이드에는 \"3600초 = 1시간\"으로 적혀 있으나, 강사는 \"맥스 에이지가 3600이죠. 그러면 브라우저는 하루 동안은 서버에 묻지도 않고 저장본을 그대로 씁니다\"라고 말함.",
+          "timestamps": [
+            {
+              "start": 99,
+              "end": 103
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
