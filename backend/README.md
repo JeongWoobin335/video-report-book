@@ -46,7 +46,7 @@ ffmpeg가 PATH에 있어야 한다.
 |---|---|---|
 | `GEMINI_API_KEY` | — | 모델 키. **무료 키에서 유료 키로 바꿀 때는 이것과 `GEMINI_MODELS`만 바꾸면 된다** |
 | `GEMINI_MODELS` | Flash 5종 → Lite 2종 | 시도할 모델(쉼표 구분, 앞의 것부터). 503·429가 나면 다음 모델로 넘어간다 |
-| `DAILY_JOB_LIMIT` | 10 | 하루에 받는 작업 수 (모든 사용자 합쳐서) — 무료 한도와 예산을 지키는 장치 |
+| `DAILY_JOB_LIMIT` | 30 | 하루에 받는 작업 수 (모든 사용자 합쳐서) — 무료 한도와 예산을 지키는 장치 |
 | `MAX_MINUTES` | 30 | 받는 영상의 최대 길이 |
 | `MAX_FRAMES` | 40 | 키프레임 최대 장수 |
 | `MAX_AUDIO_MB` / `MAX_VIDEO_MB` | 40 / 300 | 업로드 크기 제한 |
