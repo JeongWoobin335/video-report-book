@@ -4,77 +4,160 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>영상 리포트북</title>
+<meta name="description" content="영상을 올리면 음성과 화면을 함께 읽어 리포트를 만들고, 퀴즈와 만화로 이해했는지 확인해 줍니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@700&family=Jua&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
 
-<!-- 1. 올리기 -->
-<main id="view-upload" class="narrow">
-  <header class="hero">
-    <p class="eyebrow">영상 리포트북</p>
-    <h1>영상을 봤는지가 아니라,<br>이해했는지를 확인합니다.</h1>
-    <p class="lead">강의·교육 영상을 올리면 음성과 화면을 함께 읽어 <strong>리포트</strong>를 만들고, 그 내용으로 <strong>이해도 퀴즈</strong>와 <strong>요약 만화</strong>를 만들어 드립니다. 틀린 문제는 영상의 어느 구간을 다시 보면 되는지 알려 드립니다.</p>
+<!-- 1. 올리기 (메인 화면) -->
+<div id="view-upload" class="landing">
+  <header class="topbar">
+    <a class="brand" href="./"><span class="brand-mark">▶</span>영상 리포트북</a>
+    <nav>
+      <a href="#how">어떻게 동작하나요</a>
+      <a href="#demo">완성된 예시</a>
+      <a href="https://github.com/JeongWoobin335/video-report-book" target="_blank" rel="noopener">GitHub ↗</a>
+    </nav>
   </header>
 
-  <!-- 무료 서버가 잠들어 있을 때만 나타난다. 화면을 막지 않는다 — 아래에서 영상을 먼저 골라 둘 수 있다. -->
-  <section class="wake" id="wake" hidden aria-live="polite">
-    <svg class="wake-art" viewBox="0 0 120 96" aria-hidden="true">
-      <g class="zzz"><text x="84" y="30">z</text><text x="94" y="20">z</text><text x="105" y="9">z</text></g>
-      <g class="spark"><path d="M92 10v10M87 15h10"/><path d="M106 24v8M102 28h8"/><path d="M80 26v6M77 29h6"/></g>
-      <g class="box">
-        <rect x="18" y="30" width="62" height="52" rx="10"/>
-        <path class="eye shut" d="M33 52q5 5 10 0M55 52q5 5 10 0"/>
-        <g class="eye open"><circle cx="38" cy="51" r="3.2"/><circle cx="60" cy="51" r="3.2"/></g>
-        <path class="mouth" d="M43 66q6 4 12 0"/>
-        <circle class="led" cx="29" cy="40" r="2.2"/>
-      </g>
-    </svg>
-    <div class="wake-body">
-      <p class="wake-title" id="wake-title">서버를 깨우는 중이에요</p>
-      <p class="wake-tip" id="wake-tip"></p>
-      <div class="wake-track"><div class="wake-bar" id="wake-bar"></div></div>
-      <p class="wake-sec" id="wake-sec"></p>
+  <section class="hero2">
+    <div class="hero-copy">
+      <p class="eyebrow">영상 → 리포트 · 퀴즈 · 만화</p>
+      <h1>영상을 <em>봤는지</em>가 아니라,<br><mark>이해했는지</mark>를 확인합니다.</h1>
+      <p class="lead">강의·교육·회의 영상을 올리면 <strong>음성과 화면을 함께 읽어</strong> 리포트를 만들고, 그 리포트로 <strong>이해도 퀴즈</strong>와 <strong>요약 만화</strong>를 만듭니다. 틀린 문제는 영상의 어느 구간을 다시 보면 되는지 바로 알려 드립니다.</p>
+      <div class="cta">
+        <a class="btn" href="#upload">영상 올리기</a>
+        <a class="btn ghost" href="#demo">기다리지 않고 예시 보기 →</a>
+      </div>
+      <ul class="facts">
+        <li><b>0원</b>가입·결제 없이</li>
+        <li><b>1~4분</b>영상 한 편 처리</li>
+        <li><b>기기 안에서</b>영상은 밖으로 나가지 않음</li>
+      </ul>
     </div>
-  </section>
 
-  <section class="card">
-    <label class="drop" id="drop">
-      <input type="file" id="file" accept="video/*,audio/*" hidden>
-      <span class="drop-title" id="drop-title">영상 파일을 선택하거나 여기에 끌어다 놓으세요</span>
-      <span class="drop-sub" id="drop-sub">영상은 이 기기 밖으로 나가지 않습니다. 브라우저 안에서 음성과 주요 화면만 뽑아 보냅니다.</span>
-    </label>
-
-    <p class="try">
-      <span>올릴 영상이 없으신가요?</span>
-      <button type="button" class="link" id="use-sample">샘플 강의 영상으로 해 보기 (4분)</button>
-      <span class="sep">·</span>
-      <a href="#demo">기다리지 않고 완성된 예시 보기 →</a>
-    </p>
-
-    <div class="field">
-      <span class="label">영상 종류</span>
-      <div class="seg" id="kind">
-        <button type="button" data-v="" class="on">자동 판별</button>
-        <button type="button" data-v="education">강의·교육</button>
-        <button type="button" data-v="meeting">회의</button>
-        <button type="button" data-v="general">그 외</button>
+    <!-- 결과물 세 가지를 겹쳐 보여 주는 그림 -->
+    <div class="hero-art" aria-hidden="true">
+      <div class="art-card art-report">
+        <p class="art-label">리포트</p>
+        <p class="art-h">no-cache와 no-store</p>
+        <p class="art-li"><code>no-cache</code>는 저장은 하되 쓸 때마다 서버에 확인한다 <span class="chip">01:58</span></p>
+        <p class="art-li"><code>no-store</code>는 아예 저장하지 않는다 <span class="chip">02:15</span></p>
+        <p class="art-warn">⚠ 슬라이드엔 "1시간", 강사는 "하루" — 따로 표시</p>
+      </div>
+      <div class="art-card art-comic">
+        <div class="mini-bubble">저장은 하되,<br>매번 물어보는 거야!</div>
+        <svg class="mini-peep left" viewBox="-75 0 1000 1200"><circle cx="425" cy="560" r="430" fill="#ff9aa8" opacity=".55"/><image href="img/peeps/newbie-body.svg" x="16" y="467" width="818" height="733"/><image href="img/peeps/newbie-head.svg" x="190" y="40" width="473" height="567"/><image href="img/peeps/newbie-face.svg" x="349" y="226" width="289" height="293"/></svg>
+        <svg class="mini-peep right" viewBox="-75 0 1000 1200"><circle cx="425" cy="560" r="430" fill="#ffd65a" opacity=".55"/><g transform="translate(850 0) scale(-1 1)"><image href="img/peeps/mentor-body.svg" x="16" y="467" width="900" height="733"/><image href="img/peeps/mentor-head.svg" x="190" y="40" width="473" height="567"/><image href="img/peeps/mentor-face.svg" x="349" y="226" width="289" height="293"/></g></svg>
+        <span class="mini-mark">!</span>
+      </div>
+      <div class="art-card art-quiz">
+        <p class="art-label">퀴즈</p>
+        <p class="art-h">민감한 응답에 알맞은 설정은?</p>
+        <p class="art-choice wrong">no-cache <span>선택하신 답</span></p>
+        <p class="art-choice right">no-store <span>정답</span></p>
+        <p class="art-replay">▶ 다시 보기 02:04–02:41</p>
       </div>
     </div>
-
-    <label class="consent">
-      <input type="checkbox" id="consent">
-      <span>이 영상에 <strong>기밀이나 다른 사람의 개인정보가 없고</strong>, 영상에서 뽑은 음성과 화면이 <strong>외부 AI 서비스로 전송되어 처리되며 그 서비스의 개선에 쓰일 수 있다</strong>는 점을 이해했습니다. 비공개 회의 녹화처럼 민감한 영상은 올리지 않겠습니다.</span>
-    </label>
-
-    <div class="actions">
-      <span class="quota" id="quota"></span>
-      <button id="start" disabled>만들기</button>
-    </div>
-    <p class="error" id="upload-error" hidden></p>
   </section>
 
-  <p class="fineprint">결과물은 만들어진 뒤 <span id="retention">24</span>시간이 지나면 서버에서 지워집니다. 리포트는 PDF로 저장해 둘 수 있습니다.</p>
-</main>
+  <section class="band" id="how">
+    <h2>어떻게 동작하나요</h2>
+    <ol class="flow">
+      <li><span class="step">1</span><h3>영상을 고릅니다</h3><p>브라우저가 이 기기 안에서 <strong>음성과 주요 화면만</strong> 뽑습니다. 영상 파일은 어디로도 올라가지 않습니다.</p></li>
+      <li><span class="step">2</span><h3>AI가 듣고, 봅니다</h3><p>말을 받아적고 슬라이드·화면의 글자를 읽어 <strong>하나의 리포트</strong>로 합칩니다. 모든 문장에 몇 분 몇 초인지가 붙습니다.</p></li>
+      <li><span class="step">3</span><h3>이해했는지 확인합니다</h3><p>리포트에서 <strong>퀴즈와 8컷 만화</strong>를 만듭니다. 틀린 문항은 다시 볼 구간으로 바로 이동합니다.</p></li>
+    </ol>
+  </section>
+
+  <section class="band">
+    <h2>받아 보는 것</h2>
+    <div class="features">
+      <article><span class="ico">📄</span><h3>근거가 붙은 리포트</h3><p>항목마다 영상의 시각이 달려 있어 누르면 그 장면으로 갑니다. 슬라이드와 말이 <strong>서로 다르면 어느 쪽 편도 들지 않고</strong> 따로 모아 보여 줍니다. PDF로 저장할 수 있습니다.</p></article>
+      <article><span class="ico">✅</span><h3>지어내지 않는 퀴즈</h3><p>영상에 실제로 나온 내용으로만 문제를 냅니다. 채점 뒤에는 점수보다 <strong>"이 구간만 다시 보세요"</strong>를 먼저 알려 드립니다. 정답은 서버에만 있습니다.</p></article>
+      <article><span class="ico">💬</span><h3>대화로 푸는 요약 만화</h3><p>핵심을 선배와 신입의 대화 8컷으로 옮깁니다. 영상의 실제 슬라이드가 컷 안에 그대로 나오고, 컷마다 영상 시각이 달려 있습니다.</p></article>
+    </div>
+  </section>
+
+  <section class="upload-wrap" id="upload">
+    <h2>직접 해 보기</h2>
+
+    <!-- 무료 서버가 잠들어 있을 때만 나타난다. 화면을 막지 않는다 — 아래에서 영상을 먼저 골라 둘 수 있다. -->
+    <section class="wake" id="wake" hidden aria-live="polite">
+      <svg class="wake-art" viewBox="0 0 120 96" aria-hidden="true">
+        <g class="zzz"><text x="84" y="30">z</text><text x="94" y="20">z</text><text x="105" y="9">z</text></g>
+        <g class="spark"><path d="M92 10v10M87 15h10"/><path d="M106 24v8M102 28h8"/><path d="M80 26v6M77 29h6"/></g>
+        <g class="box">
+          <rect x="18" y="30" width="62" height="52" rx="10"/>
+          <path class="eye shut" d="M33 52q5 5 10 0M55 52q5 5 10 0"/>
+          <g class="eye open"><circle cx="38" cy="51" r="3.2"/><circle cx="60" cy="51" r="3.2"/></g>
+          <path class="mouth" d="M43 66q6 4 12 0"/>
+          <circle class="led" cx="29" cy="40" r="2.2"/>
+        </g>
+      </svg>
+      <div class="wake-body">
+        <p class="wake-title" id="wake-title">서버를 깨우는 중이에요</p>
+        <p class="wake-tip" id="wake-tip"></p>
+        <div class="wake-track"><div class="wake-bar" id="wake-bar"></div></div>
+        <p class="wake-sec" id="wake-sec"></p>
+      </div>
+    </section>
+
+    <aside class="notice">
+      <p class="notice-title"><span class="badge">DEMO</span>지금은 데모 버전입니다 — 무료 AI 모델을 사용합니다</p>
+      <ul>
+        <li>데모 버전에서도 <strong>모든 기능이 그대로 동작</strong>하고, 어떤 영상이든 처리됩니다.</li>
+        <li>다만 무료 모델은 입력된 내용이 <strong>AI의 학습·개선에 쓰일 수 있습니다.</strong> 내부 회의 녹화처럼 <strong>밖으로 나가면 안 되는 영상은 넣지 마세요.</strong> 공개 강의, 발표 연습, 직접 만든 교육 영상처럼 공개돼도 괜찮은 영상으로 체험해 주세요.</li>
+        <li>추후 <strong>입력이 학습에 쓰이지 않는 모델로 전환</strong>하고 보안을 강화해, 회의 영상도 안심하고 올릴 수 있도록 개선할 예정입니다.</li>
+        <li>어떤 경우에도 <strong>영상 파일 자체는 기기 밖으로 나가지 않습니다.</strong> 전송되는 것은 뽑아낸 음성과 주요 화면 몇 장이고, 결과물은 <span id="retention">24</span>시간 뒤 서버에서 지워집니다.</li>
+      </ul>
+    </aside>
+
+    <section class="card">
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept="video/*,audio/*" hidden>
+        <span class="drop-ico" aria-hidden="true">⬆</span>
+        <span class="drop-title" id="drop-title">영상 파일을 선택하거나 여기에 끌어다 놓으세요</span>
+        <span class="drop-sub" id="drop-sub">mp4 · mov · webm 등, 30분 이하. 영상은 이 기기 밖으로 나가지 않습니다.</span>
+      </label>
+
+      <p class="try">
+        <span>올릴 영상이 없으신가요?</span>
+        <button type="button" class="link" id="use-sample">샘플 강의 영상으로 해 보기 (4분)</button>
+        <span class="sep">·</span>
+        <a href="#demo">기다리지 않고 완성된 예시 보기 →</a>
+      </p>
+
+      <div class="field">
+        <span class="label">영상 종류</span>
+        <div class="seg" id="kind">
+          <button type="button" data-v="" class="on">자동 판별</button>
+          <button type="button" data-v="education">강의·교육</button>
+          <button type="button" data-v="meeting">회의</button>
+          <button type="button" data-v="general">그 외</button>
+        </div>
+      </div>
+
+      <label class="consent">
+        <input type="checkbox" id="consent">
+        <span><strong>위 데모 안내를 읽었습니다.</strong> 이 영상에는 기밀이나 다른 사람의 개인정보가 없으며, 영상에서 뽑은 음성과 화면이 <strong>외부 AI 서비스(Google Gemini 무료 등급)로 전송</strong>되어 처리되고 그 서비스의 학습·개선에 쓰일 수 있다는 점에 동의합니다.</span>
+      </label>
+
+      <div class="actions">
+        <span class="quota" id="quota"></span>
+        <button id="start" disabled>리포트 만들기</button>
+      </div>
+      <p class="error" id="upload-error" hidden></p>
+    </section>
+  </section>
+
+  <footer class="foot">
+    <p>영상 리포트북 · 데모 버전 · <a href="https://github.com/JeongWoobin335/video-report-book" target="_blank" rel="noopener">소스 코드</a></p>
+    <p>만화 캐릭터: Open Peeps (Pablo Stanley, CC0)</p>
+  </footer>
+</div>
 
 <!-- 2. 만드는 중 -->
 <main id="view-progress" class="narrow" hidden>
