@@ -1,0 +1,17 @@
+{
+  "characters": {
+    "mentor": {"skin": "#f2c9a5", "hair": "#2b2b33", "shirt": "#34507a", "hairstyle": "bob", "glasses": true},
+    "newbie": {"skin": "#f6d3b3", "hair": "#7a4a2b", "shirt": "#e8833a", "hairstyle": "short", "glasses": false},
+    "peer": {"skin": "#e8b88f", "hair": "#1f1f1f", "shirt": "#3f8f6b", "hairstyle": "long", "glasses": false}
+  },
+  "moods": {
+    "explain": {"eyes": "dot", "brow": "flat", "mouth": "open", "arm": "point", "mark": ""},
+    "ask": {"eyes": "dot", "brow": "flat", "mouth": "open", "arm": "raise", "mark": "?"},
+    "confused": {"eyes": "dot", "brow": "tilt", "mouth": "flat", "arm": "down", "mark": "?"},
+    "surprised": {"eyes": "wide", "brow": "up", "mouth": "o", "arm": "down", "mark": "!"},
+    "happy": {"eyes": "arc", "brow": "flat", "mouth": "smile", "arm": "down", "mark": ""},
+    "worried": {"eyes": "dot", "brow": "sad", "mouth": "frown", "arm": "down", "mark": ""},
+    "think": {"eyes": "dot", "brow": "flat", "mouth": "flat", "arm": "chin", "mark": "…"},
+    "neutral": {"eyes": "dot", "brow": "flat", "mouth": "smile", "arm": "down", "mark": ""}
+  }
+}

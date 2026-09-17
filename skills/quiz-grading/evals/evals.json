@@ -1,0 +1,19 @@
+{
+  "skill_name": "quiz-grading",
+  "evals": [
+    {
+      "id": 1,
+      "name": "lecture-http-caching",
+      "prompt": "신입 7명이 HTTP 캐싱 강의 퀴즈를 다 풀었어. 폴더에 quiz.json이랑 answers 폴더에 응답 들어있어. 채점하고, 다들 어디를 놓쳤는지, 강의에서 뭘 보강해야 할지 알려줘.",
+      "expected_output": "results/ 7개, summary.json, insights.md, summary.html. 발견: ① no-cache를 'no-store'의 뜻(저장 안 함)으로 아는 사람이 7명 중 5명 — 04:20~05:35 구간 보강 권고 ② ETag가 언제 바뀌는지 문항은 점수 높은 사람들이 틀림 → 문항 점검 권고(응답 7명이라 단정은 피함) ③ 304 문항은 오답이 흩어짐 ④ 이해 문항 정답률이 기억보다 낮음 ⑤ 오세린은 개인적으로 다시 볼 구간 전달. 문항 번호가 아니라 내용과 구간으로 말함.",
+      "files": ["evals/files/lecture-http-caching/quiz.json", "evals/files/lecture-http-caching/answers/"]
+    },
+    {
+      "id": 2,
+      "name": "meeting-beta-schedule",
+      "prompt": "베타 출시 일정 회의 못 들어온 팀원 5명한테 확인 문항 돌렸고 응답이 answers 폴더에 있어. 다들 회의 내용 제대로 알고 있는지 봐줘.",
+      "expected_output": "개인 점수표·순위 없음. 발견: ① 스토어 심사 기간 확인을 지현 님이 맡은 것으로 아는 분이 5명 중 3명 — 실제로는 담당 미정 → 담당 지정과 공지 권고 ② 출시일을 기각된 10월 21일로 아는 분이 2명 → 28일 확정을 재공지. '틀렸다'가 아니라 '~로 알고 있는 분이 N명' 식 표현. 조치는 재시청보다 공지. 응답 5명이라 경향으로만 봐 달라는 단서.",
+      "files": ["evals/files/meeting-beta-schedule/quiz.json", "evals/files/meeting-beta-schedule/answers/"]
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}}</title>
+<style>
+  :root {
+    --bg: #fbfaf7; --surface: #ffffff; --text: #1f2328; --muted: #6b7280; --ink: #23262d;
+    --accent: #2f5fd0; --accent-soft: #e8eefc; --wall: #f3ead9; --floor: #dcc9a6; --plain: #eaf0fb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #16181c; --surface: #1e2126; --text: #e6e8eb; --muted: #9aa2ad; --accent: #8fb0ff; --accent-soft: #232c45; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif; line-height: 1.5; word-break: keep-all; overflow-wrap: anywhere;
+  }
+  main { max-width: 880px; margin: 0 auto; padding: 36px 16px 72px; }
+  h1 { font-size: 26px; margin: 0 0 4px; }
+  .lead { color: var(--muted); font-size: 14.5px; margin: 0 0 24px; }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+
+  /* 컷: 위에 말풍선(길이에 따라 늘어남), 아래에 무대(인물 + 보드). 컷 안은 늘 밝은 종이색 — 만화는 다크모드에서도 종이 위에 있다. */
+  .panel { margin: 0; display: flex; flex-direction: column; border: 2.5px solid var(--ink); border-radius: 14px; overflow: hidden; background: #fff; color: #1f2328; }
+  .bubbles { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; padding: 12px 12px 14px; min-height: 96px; background: var(--plain); }
+  .panel.office .bubbles { background: var(--wall); }
+  .bubble { position: relative; max-width: 84%; padding: 7px 13px; border: 2px solid var(--ink); border-radius: 16px; background: #fff; font-size: 15.5px; font-weight: 500; }
+  .bubble.left { align-self: flex-start; } .bubble.right { align-self: flex-end; }
+  .bubble::after { content: ""; position: absolute; bottom: -10px; width: 14px; height: 14px; background: #fff; border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); transform: rotate(45deg) skew(12deg, 12deg); }
+  .bubble.left::after { left: 26px; } .bubble.right::after { right: 26px; }
+  .bubble code, figcaption code { font-family: ui-monospace, Consolas, monospace; font-size: 0.92em; background: var(--accent-soft); color: #1d3a8a; padding: 0 4px; border-radius: 4px; }
+  .stage { position: relative; aspect-ratio: 16 / 9; background: var(--plain); }
+  .office .stage { background: linear-gradient(var(--wall) 0 72%, var(--floor) 72% 100%); }
+  .actor { position: absolute; bottom: 0; width: 31%; }
+  .actor.left { left: 1%; } .actor.right { right: 1%; }
+  .actor svg { display: block; width: 100%; height: auto; }
+  .actor .name { position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); font-size: 11px; background: rgba(255,255,255,.85); border-radius: 999px; padding: 0 7px; white-space: nowrap; }
+  .board { position: absolute; top: 6%; bottom: 12%; left: 31%; right: 31%; border: 3px solid var(--ink); border-radius: 8px; background: #fff; overflow: hidden; box-shadow: 0 3px 0 rgba(0,0,0,.18); }
+  .solo .board { right: 4%; }
+  .board img { width: 100%; height: 100%; object-fit: contain; display: block; background: #111; }
+  .board pre { margin: 0; padding: 8px 10px; font: 600 10.5px/1.45 "Malgun Gothic", system-ui, sans-serif; white-space: pre-wrap; color: #1f2328; height: 100%; overflow: hidden; }
+  .board pre::first-line { font-size: 12px; color: #1d3a8a; }
+  figcaption { display: flex; gap: 8px; align-items: center; padding: 8px 12px; border-top: 2.5px solid var(--ink); font-size: 13.5px; background: #fffdf6; min-height: 38px; }
+  figcaption .n { font-weight: 800; flex: none; }
+  figcaption .nar { flex: 1; }
+  a.ts { flex: none; margin-left: auto; font-size: 12.5px; text-decoration: none; font-variant-numeric: tabular-nums; color: #1d3a8a; background: var(--accent-soft); border-radius: 999px; padding: 1px 9px; }
+</style>
+</head>
+<body>
+<main>
+  <h1 id="title"></h1>
+  <p class="lead" id="lead"></p>
+  <div class="grid" id="grid"></div>
+</main>
+<script id="cast" type="application/json">{{cast_json}}</script>
+<script id="data" type="application/json">{{comic_json}}</script>
+<script>
+{{characters_js}}
+</script>
+<script>
+  var CAST = JSON.parse(document.getElementById("cast").textContent);
+  var comic = JSON.parse(document.getElementById("data").textContent);
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function md(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/`(.+?)`/g, "<code>$1</code>"); }
+
+  document.getElementById("title").textContent = comic.title;
+  document.getElementById("lead").textContent = "「" + comic.report_title + "」의 내용을 " + comic.panels.length + "컷으로 옮겼습니다. 등장인물은 가상의 인물이며, 컷 아래의 시각을 누르면 영상의 해당 부분으로 갑니다.";
+
+  document.getElementById("grid").innerHTML = comic.panels.map(function (p) {
+    var bg = p.background, board = "";
+    if (bg.kind === "screen") board = '<div class="board">' + (bg.image ? '<img src="' + esc(bg.image) + '" alt="영상 화면">' : "<pre>" + esc(bg.text) + "</pre>") + "</div>";
+    return '<figure class="panel ' + (bg.kind === "office" ? "office" : "") + (p.people.length < 2 ? " solo" : "") + '" id="c' + p.n + '">' +
+      '<div class="bubbles">' + p.bubbles.map(function (b) { return '<div class="bubble ' + b.side + '">' + md(b.text) + "</div>"; }).join("") + "</div>" +
+      '<div class="stage">' + board + p.people.map(function (a) {
+        return '<div class="actor ' + a.side + '">' + drawCharacter(CAST, a.character, a.mood, a.side === "right") + '<span class="name">' + esc(a.name) + "</span></div>";
+      }).join("") + "</div>" +
+      '<figcaption><span class="n">' + p.n + '</span><span class="nar">' + md(p.narration || "") + "</span>" +
+      (p.t_label ? '<a class="ts" href="#t=' + p.t + '" data-t="' + p.t + '">▶ ' + p.t_label + "</a>" : "") + "</figcaption></figure>";
+  }).join("");
+
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest("a.ts");
+    if (!a) return;
+    e.preventDefault();
+    if (window.parent !== window) window.parent.postMessage({ type: "seek", t: Number(a.dataset.t) }, "*");
+  });
+</script>
+</body>
+</html>

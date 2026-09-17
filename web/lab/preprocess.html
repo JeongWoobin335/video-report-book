@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>전처리 시험</title>
+<style>
+  :root { --bg: #fbfaf7; --surface: #ffffff; --text: #1f2328; --muted: #6b7280; --line: #e5e2da; --accent: #2f5fd0; --accent-soft: #e8eefc; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #16181c; --surface: #1e2126; --text: #e6e8eb; --muted: #9aa2ad; --line: #30353d; --accent: #8fb0ff; --accent-soft: #232c45; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: Pretendard, "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif; line-height: 1.6; }
+  main { max-width: 900px; margin: 0 auto; padding: 32px 16px 80px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  p.lead { color: var(--muted); margin: 0 0 20px; font-size: 14.5px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 0 0 14px; }
+  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  input[type=text] { font: inherit; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--text); min-width: 260px; }
+  button { font: inherit; font-weight: 600; color: #fff; background: var(--accent); border: 0; border-radius: 10px; padding: 8px 16px; cursor: pointer; }
+  @media (prefers-color-scheme: dark) { button { color: #10131a; } }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  progress { width: 100%; height: 8px; }
+  .log { font: 13px/1.6 ui-monospace, Consolas, monospace; white-space: pre-wrap; color: var(--muted); margin: 8px 0 0; }
+  .frames { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-top: 10px; }
+  .frames figure { margin: 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; font-size: 12px; color: var(--muted); }
+  .frames img { display: block; width: 100%; }
+  .frames figcaption { padding: 2px 6px; font-variant-numeric: tabular-nums; }
+  audio { width: 100%; margin-top: 8px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>브라우저 전처리 시험</h1>
+  <p class="lead">영상 파일에서 키프레임과 오디오를 브라우저 안에서 뽑습니다. 이 단계에서 영상은 어디로도 전송되지 않습니다.</p>
+
+  <div class="card">
+    <div class="row">
+      <input type="file" id="file" accept="video/*,audio/*">
+      <button id="run" disabled>뽑기</button>
+    </div>
+    <p class="log" id="info"></p>
+  </div>
+
+  <div class="card">
+    <strong>키프레임</strong>
+    <progress id="pf" value="0" max="1"></progress>
+    <p class="log" id="lf"></p>
+    <div class="frames" id="frames"></div>
+  </div>
+
+  <div class="card">
+    <strong>오디오</strong>
+    <progress id="pa" value="0" max="1"></progress>
+    <p class="log" id="la"></p>
+    <div id="audio"></div>
+  </div>
+
+  <div class="card">
+    <strong>백엔드로 보내기</strong> <span style="color:var(--muted);font-size:13px">(여기서부터는 뽑은 오디오와 키프레임이 서버와 AI 서비스로 전송됩니다)</span>
+    <div class="row" style="margin-top:8px">
+      <input type="text" id="api" value="http://127.0.0.1:8000">
+      <button id="send" disabled>작업 접수</button>
+    </div>
+    <p class="log" id="ls"></p>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.0/lame.min.js"></script>
+<script type="module">
+  import { probe, extractKeyframes, extractAudio, submitJob } from "../js/preprocess.js";
+  const $ = (id) => document.getElementById(id);
+  const mmss = (s) => String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(Math.floor(s % 60)).padStart(2, "0");
+  let file = null, result = null;
+  window.lab = { result: null, status: "idle" };  // 자동 시험에서 결과를 읽어 가는 창구
+
+  async function useFile(f) {
+    file = f;
+    const meta = await probe(f);
+    $("info").textContent = `${f.name} · ${(f.size / 1e6).toFixed(1)}MB · ${mmss(meta.duration)} · ${meta.width}×${meta.height}`;
+    $("run").disabled = false;
+    return meta;
+  }
+  $("file").addEventListener("change", (e) => e.target.files[0] && useFile(e.target.files[0]));
+
+  async function run() {
+    $("run").disabled = true;
+    window.lab.status = "running";
+    const meta = await probe(file);
+    const t0 = performance.now();
+    const frames = await extractKeyframes(file, { onProgress: (p, n) => { $("pf").value = p; $("lf").textContent = `${Math.round(p * 100)}% · ${n}장`; } });
+    const tf = (performance.now() - t0) / 1000;
+    $("lf").textContent = `${frames.length}장 · ${tf.toFixed(1)}초 · 합계 ${(frames.reduce((a, f) => a + f.blob.size, 0) / 1e6).toFixed(2)}MB · 시각: ${frames.map((f) => mmss(f.time)).join(", ")}`;
+    $("frames").innerHTML = "";
+    frames.forEach((f) => {
+      const fig = document.createElement("figure");
+      fig.innerHTML = `<img src="${URL.createObjectURL(f.blob)}"><figcaption>${mmss(f.time)} · 차이 ${f.diff}</figcaption>`;
+      $("frames").appendChild(fig);
+    });
+
+    const t1 = performance.now();
+    const audio = await extractAudio(file, { onProgress: (p) => { $("pa").value = p; } });
+    const ta = (performance.now() - t1) / 1000;
+    if (audio) {
+      $("la").textContent = `${mmss(audio.duration)} · ${(audio.blob.size / 1e6).toFixed(2)}MB (mp3) · ${ta.toFixed(1)}초`;
+      $("audio").innerHTML = `<audio controls src="${URL.createObjectURL(audio.blob)}"></audio>`;
+    } else {
+      $("la").textContent = "오디오를 뽑지 못했습니다 (오디오 트랙이 없거나, 파일이 너무 크거나, 브라우저가 이 형식을 디코딩하지 못함).";
+    }
+    result = { frames, audio: audio && audio.blob, duration: meta.duration, title: file.name.replace(/\.[^.]+$/, "") };
+    window.lab.result = { frameTimes: frames.map((f) => f.time), frameSeconds: tf, frameBytes: frames.reduce((a, f) => a + f.blob.size, 0),
+                          audioBytes: audio ? audio.blob.size : 0, audioSeconds: ta, audioDuration: audio ? audio.duration : 0, duration: meta.duration };
+    window.lab.status = "done";
+    $("send").disabled = false;
+    $("run").disabled = false;
+  }
+  $("run").addEventListener("click", () => run().catch((e) => { window.lab.status = "error: " + e.message; $("lf").textContent = "실패: " + e.message; }));
+
+  $("send").addEventListener("click", async () => {
+    $("send").disabled = true;
+    try {
+      const job = await submitJob($("api").value, result);
+      window.lab.job = job;
+      $("ls").textContent = `접수됨: ${job.id} (${job.state})`;
+      const base = $("api").value.replace(/\/$/, "") + "/api/jobs/" + job.id;
+      for (;;) {
+        await new Promise((r) => setTimeout(r, 4000));
+        const s = await (await fetch(base)).json();
+        window.lab.job = s;
+        $("ls").textContent = `${s.state} · ` + s.stages.map((x) => `${x.label}:${x.state}`).join(" → ") + (s.error ? `\n${s.error}` : "");
+        if (s.state === "done" || s.state === "failed") {
+          if (s.state === "done") $("ls").textContent += `\n리포트: ${base}/files/report.html\n만화: ${base}/files/comic.html`;
+          break;
+        }
+      }
+    } catch (e) {
+      $("ls").textContent = "실패: " + e.message;
+    }
+    $("send").disabled = false;
+  });
+
+  // 자동 시험용: ?src=/samples/xxx.mp4 로 열면 그 파일을 받아 바로 뽑는다
+  const src = new URLSearchParams(location.search).get("src");
+  if (src) {
+    const res = await fetch(src);
+    const blob = await res.blob();
+    await useFile(new File([blob], src.split("/").pop(), { type: blob.type || "video/mp4" }));
+    run().catch((e) => { window.lab.status = "error: " + e.message; });
+  }
+</script>
+</body>
+</html>

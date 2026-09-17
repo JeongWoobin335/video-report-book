@@ -1,0 +1,26 @@
+{
+  "skill_name": "integrated-report",
+  "evals": [
+    {
+      "id": 1,
+      "name": "meeting-beta-schedule",
+      "prompt": "어제 한 베타 출시 일정 회의 녹화본을 전사랑 화면 분석까지 돌려놨어. 이 폴더에 transcript.json이랑 screens.json 있으니까 회의 못 들어온 팀원들한테 공유할 회의록 좀 만들어줘.",
+      "expected_output": "type: meeting 리포트. 출시일은 최종 결정(10/28)만 결정 사항에, 10/21 제안은 논의에. 액션 아이템 4개(민수-크래시 수정-다음 주 수요일, C-온보딩 시안-금요일, 민수-푸시 공수-금요일, 담당 미정-스토어 심사 확인). 화자 C는 이름 없이 유지, A=지현·B=민수는 이름 사용 가능. QA 2주(화면) vs 3주(발언) 불일치 기록. 푸시 알림은 미결 사항. 07:05의 저신뢰 발화(리텐션 수치)는 사실로 쓰지 않음. draft.md, report.html, report.json 생성.",
+      "files": ["evals/files/meeting-beta-schedule/transcript.json", "evals/files/meeting-beta-schedule/screens.json"]
+    },
+    {
+      "id": 2,
+      "name": "lecture-http-caching",
+      "prompt": "신입 온보딩용 사내 강의 영상인데 (웹 성능 입문 3강) 복습 자료로 쓸 정리 문서가 필요해. 폴더에 전사랑 화면 분석 결과 들어있어. 나중에 이걸로 퀴즈도 만들 거야.",
+      "expected_output": "type: education 리포트. 용어는 슬라이드 표기(max-age, no-cache, no-store, ETag, If-None-Match, 304 Not Modified)를 따름 — '맥스 에이지', '이태그' 같은 전사 표기 금지. 'no-cache ≠ 저장 안 함'이 '주의:' 항목으로 들어감. 로고 이미지 예시가 구체적으로 적힘. max-age=3600을 슬라이드는 1시간, 강사는 '하루'라고 말한 불일치 기록. s-maxage는 '슬라이드에만 있음'으로 표시하거나 생략(강사 설명으로 쓰면 안 됨). CDN 등 강의에 없는 지식 보태지 않음.",
+      "files": ["evals/files/lecture-http-caching/transcript.json", "evals/files/lecture-http-caching/screens.json"]
+    },
+    {
+      "id": 3,
+      "name": "lecture-audio-only",
+      "prompt": "이거 강의 녹음 파일 전사한 건데 화면은 없고 음성만 있어. transcript.json 하나뿐이야. 내용 정리해서 리포트로 뽑아줘.",
+      "expected_output": "screens.json 없이도 끝까지 동작. type: education. 화면이 없으므로 용어 표기를 확인할 수 없다는 점 — 전사가 소리 나는 대로 적은 용어(맥스 에이지, 이태그, 삼백사)를 표준 표기로 고쳤다면 그 사실을, 또는 표기가 불확실하다는 점을 사용자 보고에서 알림. 화면·발언 불일치 섹션 없음. 모든 항목에 타임스탬프.",
+      "files": ["evals/files/lecture-audio-only/transcript.json"]
+    }
+  ]
+}

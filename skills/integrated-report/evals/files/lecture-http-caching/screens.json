@@ -1,0 +1,60 @@
+{
+ "screens": [
+  {
+   "time": 0,
+   "kind": "slide",
+   "image": "frames/0001.jpg",
+   "text": "HTTP 캐싱 기초\n웹 성능 입문 3강",
+   "description": "강의 제목 슬라이드."
+  },
+  {
+   "time": 18,
+   "kind": "slide",
+   "image": "frames/0002.jpg",
+   "text": "오늘 배울 것\n1. 캐시란 무엇이고 왜 쓰는가\n2. Cache-Control 헤더로 캐시 제어하기\n3. ETag로 저장본 검증하기\n\n목표: 응답 헤더를 보고 캐시 동작을 설명할 수 있다",
+   "description": "목차와 학습 목표 슬라이드."
+  },
+  {
+   "time": 68,
+   "kind": "slide",
+   "image": "frames/0003.jpg",
+   "text": "캐시(Cache)란?\n한 번 받은 응답의 복사본을 가까운 곳에 저장해 두고 재사용하는 것\n\n왜?\n· 사용자: 더 빠른 로딩\n· 서버: 요청 수 ↓ 부하·비용 ↓",
+   "description": "캐시의 정의와 장점 두 가지. 오른쪽에 브라우저–서버 사이에 저장소가 놓인 도식."
+  },
+  {
+   "time": 178,
+   "kind": "slide",
+   "image": "frames/0004.jpg",
+   "text": "Cache-Control 헤더\n\nCache-Control: max-age=3600\n\nmax-age=N   N초 동안 신선(fresh) → 서버에 묻지 않고 재사용\ns-maxage=N  공유 캐시(CDN, 프록시) 전용 max-age\n\n3600초 = 1시간",
+   "description": "Cache-Control 헤더 예시와 max-age, s-maxage 지시어 설명 표."
+  },
+  {
+   "time": 258,
+   "kind": "slide",
+   "image": "frames/0005.jpg",
+   "text": "헷갈리기 쉬운 두 가지\n\nno-cache  저장 O, 사용할 때마다 서버에 검증\nno-store  저장 X (민감한 응답)\n\n⚠ no-cache ≠ 캐시 안 함",
+   "description": "no-cache와 no-store를 비교하는 표. 아래에 경고 문구."
+  },
+  {
+   "time": 353,
+   "kind": "slide",
+   "image": "frames/0006.jpg",
+   "text": "ETag로 검증하기\n\n① 첫 응답: 200 OK + ETag: \"a1b2c3\"\n② 재요청: If-None-Match: \"a1b2c3\"\n③-a 같으면: 304 Not Modified (본문 없음)\n③-b 다르면: 200 OK + 새 본문 + 새 ETag",
+   "description": "브라우저와 서버 사이의 요청·응답 순서를 화살표로 그린 시퀀스 다이어그램."
+  },
+  {
+   "time": 492,
+   "kind": "slide",
+   "image": "frames/0007.jpg",
+   "text": "실무 팁\n\napp.3f9a1c.js   Cache-Control: max-age=31536000\nindex.html      Cache-Control: no-cache",
+   "description": "파일 종류별 권장 Cache-Control 설정 두 줄."
+  },
+  {
+   "time": 548,
+   "kind": "slide",
+   "image": "frames/0008.jpg",
+   "text": "정리\n· 캐시 = 복사본을 가까이\n· max-age = 신선한 기간\n· no-cache = 매번 검증 / no-store = 저장 금지\n· ETag + 304 = 본문 없이 검증\n\n다음 시간: CDN 캐시",
+   "description": "핵심 요약 슬라이드."
+  }
+ ]
+}

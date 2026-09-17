@@ -1,0 +1,39 @@
+{
+ "screens": [
+  {
+   "time": 0,
+   "kind": "people",
+   "text": "",
+   "description": "화상회의 갤러리 화면. 참가자 세 명의 영상 타일.",
+   "image": "frames/0001.jpg"
+  },
+  {
+   "time": 40,
+   "kind": "slide",
+   "image": "frames/0002.jpg",
+   "text": "모바일 앱 베타 출시 일정 점검\n\n안건\n1. 베타 출시일 확정\n2. 결제 화면 크래시 대응\n3. 푸시 알림 베타 포함 여부",
+   "description": "안건 세 가지가 번호 목록으로 적힌 슬라이드."
+  },
+  {
+   "time": 68,
+   "kind": "screen_share",
+   "image": "frames/0003.jpg",
+   "text": "베타 출시 일정표\n개발 완료  9/30\nQA 기간  2주 (10/1 ~ 10/13)\n베타 출시  10/14\n정식 출시  11/18",
+   "description": "스프레드시트로 만든 일정표. 단계별 날짜가 표로 정리되어 있다."
+  },
+  {
+   "time": 252,
+   "kind": "screen_share",
+   "image": "frames/0004.jpg",
+   "text": "Crash Dashboard — 최근 7일\n전체 크래시율 2.8%\n화면별 비중: 결제 60% · 홈 15% · 검색 12% · 기타 13%\n영향 OS: Android 12 이하 91%",
+   "description": "크래시 모니터링 대시보드. 상단에 전체 크래시율, 아래에 화면별 비중 막대 그래프."
+  },
+  {
+   "time": 398,
+   "kind": "people",
+   "text": "",
+   "description": "화면 공유가 끝나고 갤러리 화면으로 돌아옴.",
+   "image": "frames/0005.jpg"
+  }
+ ]
+}

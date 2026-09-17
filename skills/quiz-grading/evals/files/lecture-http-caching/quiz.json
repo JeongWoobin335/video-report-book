@@ -1,0 +1,340 @@
+{
+  "title": "HTTP 캐싱 기초 (웹 성능 입문 3강) — 이해도 확인",
+  "type": "education",
+  "report_title": "HTTP 캐싱 기초 (웹 성능 입문 3강)",
+  "items": [
+    {
+      "id": "q1",
+      "checks": "recall",
+      "question": "이 강의에서 캐시가 서버 쪽에 주는 이점으로 설명한 것은 무엇인가요?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "서버가 `ETag`를 계산하지 않아도 됩니다"
+        },
+        {
+          "id": "b",
+          "text": "요청 수가 줄어 부하와 비용이 내려갑니다"
+        },
+        {
+          "id": "c",
+          "text": "새 버전 배포가 사용자에게 더 빨리 퍼집니다"
+        },
+        {
+          "id": "d",
+          "text": "응답마다 본문을 압축해 전송량이 줄어듭니다"
+        }
+      ],
+      "answer": "b",
+      "explanation": "강의는 캐시의 이점을 두 가지로 설명했습니다. 사용자에게는 빠른 로딩, 서버에는 요청 수 감소로 인한 부하·비용 절감입니다. 본문을 보내지 않아 가벼워지는 것은 `304` 응답의 이야기이고, 압축은 강의에서 다루지 않았습니다.",
+      "sources": [
+        "p12"
+      ],
+      "section": "캐시를 왜 쓰는가",
+      "review": {
+        "start": 100,
+        "end": 130
+      }
+    },
+    {
+      "id": "q2",
+      "checks": "recall",
+      "question": "브라우저는 저장본을 언제까지 써도 되는지를 어떻게 알게 되나요?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "브라우저가 파일 종류별 기본값으로 정합니다"
+        },
+        {
+          "id": "b",
+          "text": "`ETag` 값 안에 사용 기한이 함께 적혀 있습니다"
+        },
+        {
+          "id": "c",
+          "text": "브라우저가 요청의 `If-None-Match` 헤더로 정합니다"
+        },
+        {
+          "id": "d",
+          "text": "서버가 응답의 `Cache-Control` 헤더로 알려줍니다"
+        }
+      ],
+      "answer": "d",
+      "explanation": "저장본의 사용 기간은 서버가 응답 헤더 `Cache-Control`로 지시합니다. `If-None-Match`와 `ETag`는 기간을 정하는 것이 아니라, 저장본이 아직 유효한지 서버에 확인할 때 쓰는 것입니다.",
+      "sources": [
+        "p7"
+      ],
+      "section": "핵심 개념",
+      "review": {
+        "start": 180,
+        "end": 210
+      }
+    },
+    {
+      "id": "q3",
+      "checks": "understanding",
+      "question": "`max-age`로 정해진 신선한 기간이 아직 남아 있을 때, 같은 리소스가 다시 필요해지면 브라우저는 어떻게 하나요?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "네트워크 요청 없이 저장본을 그대로 씁니다"
+        },
+        {
+          "id": "b",
+          "text": "`If-None-Match`로 확인한 뒤 저장본을 씁니다"
+        },
+        {
+          "id": "c",
+          "text": "헤더만 먼저 요청해 저장본과 비교합니다"
+        },
+        {
+          "id": "d",
+          "text": "서버에서 새로 받아 저장본을 교체합니다"
+        }
+      ],
+      "answer": "a",
+      "explanation": "신선한 기간 동안에는 브라우저가 서버에 묻지도 않으며, 네트워크 요청 자체가 나가지 않습니다. `If-None-Match`로 서버에 확인하는 것은 검증이 필요해졌을 때의 동작입니다.",
+      "sources": [
+        "p15"
+      ],
+      "section": "Cache-Control과 max-age",
+      "review": {
+        "start": 230,
+        "end": 260
+      }
+    },
+    {
+      "id": "q4",
+      "checks": "understanding",
+      "question": "응답에 `Cache-Control: no-cache`가 붙어 있으면 브라우저는 그 응답을 어떻게 다루나요?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "저장해 두고, 쓸 때마다 서버에 확인합니다"
+        },
+        {
+          "id": "b",
+          "text": "저장해 두고, 확인 없이 계속 씁니다"
+        },
+        {
+          "id": "c",
+          "text": "본문은 버리고 `ETag`만 저장해 둡니다"
+        },
+        {
+          "id": "d",
+          "text": "디스크에 아예 저장하지 않습니다"
+        }
+      ],
+      "answer": "a",
+      "explanation": "강사가 가장 헷갈리기 쉽다고 짚은 부분입니다. `no-cache`는 이름과 달리 \"캐시하지 말라\"가 아니라, 저장은 하되 쓸 때마다 서버에 아직 써도 되는지 반드시 확인하라는 뜻입니다. 아예 저장하지 않는 것은 `no-store`입니다.",
+      "sources": [
+        "p19",
+        "p17"
+      ],
+      "section": "no-cache와 no-store",
+      "review": {
+        "start": 275,
+        "end": 305
+      }
+    },
+    {
+      "id": "q5",
+      "checks": "understanding",
+      "question": "은행 거래 내역처럼 민감한 응답에는 이 강의에서 어떤 설정을 쓴다고 했나요?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "`no-cache`를 줍니다"
+        },
+        {
+          "id": "b",
+          "text": "`no-store`를 줍니다"
+        },
+        {
+          "id": "c",
+          "text": "`max-age`를 1년으로 줍니다"
+        },
+        {
+          "id": "d",
+          "text": "`If-None-Match`를 줍니다"
+        }
+      ],
+      "answer": "b",
+      "explanation": "`no-store`가 붙으면 브라우저는 응답을 디스크에 아예 남기지 않으므로 민감한 응답에 씁니다. `no-cache`는 저장은 하고 매번 검증만 하는 것이어서, 저장본이 디스크에 남습니다.",
+      "sources": [
+        "p20",
+        "p18"
+      ],
+      "section": "no-cache와 no-store",
+      "review": {
+        "start": 305,
+        "end": 335
+      }
+    },
+    {
+      "id": "q6",
+      "checks": "recall",
+      "question": "이 강의의 설명에 따르면 `ETag` 값은 언제 바뀌나요?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "`max-age`로 정한 기간이 끝날 때"
+        },
+        {
+          "id": "b",
+          "text": "브라우저가 저장본을 다시 쓸 때마다"
+        },
+        {
+          "id": "c",
+          "text": "리소스 내용이 한 글자라도 바뀔 때"
+        },
+        {
+          "id": "d",
+          "text": "서버가 응답을 새로 보낼 때마다"
+        }
+      ],
+      "answer": "c",
+      "explanation": "`ETag`는 서버가 리소스 내용에 붙이는 지문 같은 값이어서, 내용이 한 글자라도 바뀌면 함께 바뀝니다. 시간이 지나거나 요청이 오간다고 바뀌는 값이 아니기 때문에 \"내용이 그대로인지\"를 확인하는 데 쓸 수 있습니다.",
+      "sources": [
+        "p10"
+      ],
+      "section": "핵심 개념",
+      "review": {
+        "start": 375,
+        "end": 405
+      }
+    },
+    {
+      "id": "q7",
+      "checks": "recall",
+      "question": "저장본이 아직 유효한지 확인할 때, 브라우저는 기억해 둔 `ETag`를 어떤 헤더에 담아 보내나요?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "`Not-Modified`"
+        },
+        {
+          "id": "b",
+          "text": "`Cache-Control`"
+        },
+        {
+          "id": "c",
+          "text": "`ETag`"
+        },
+        {
+          "id": "d",
+          "text": "`If-None-Match`"
+        }
+      ],
+      "answer": "d",
+      "explanation": "브라우저는 `If-None-Match` 헤더에 `ETag`를 담아 \"내가 가진 게 이 버전인데 아직 맞냐\"고 묻습니다. `ETag` 헤더는 서버가 응답에 붙여 주는 쪽이고, `Not Modified`는 서버가 돌려주는 `304` 응답의 이름입니다.",
+      "sources": [
+        "p23"
+      ],
+      "section": "ETag로 검증하기",
+      "review": {
+        "start": 420,
+        "end": 450
+      }
+    },
+    {
+      "id": "q8",
+      "checks": "understanding",
+      "question": "브라우저가 보낸 `ETag`가 서버가 가진 것과 같을 때, 서버는 무엇을 돌려주나요?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "`304 Not Modified`와 함께 본문을 보냅니다"
+        },
+        {
+          "id": "b",
+          "text": "`200 OK`와 함께 같은 본문을 다시 보냅니다"
+        },
+        {
+          "id": "c",
+          "text": "본문 없이 `304 Not Modified`만 돌려줍니다"
+        },
+        {
+          "id": "d",
+          "text": "본문 없이 `200 OK`와 새 `ETag`만 보냅니다"
+        }
+      ],
+      "answer": "c",
+      "explanation": "`ETag`가 같으면 내용이 그대로라는 뜻이므로 서버는 본문 없이 `304 Not Modified`만 돌려주고, 브라우저는 저장본을 그대로 씁니다. 본문을 보내지 않아서 훨씬 가볍습니다. `200 OK`와 새 본문·새 `ETag`가 오는 것은 `ETag`가 다를 때입니다.",
+      "sources": [
+        "p24",
+        "p26"
+      ],
+      "section": "ETag로 검증하기",
+      "review": {
+        "start": 445,
+        "end": 475
+      }
+    },
+    {
+      "id": "q9",
+      "checks": "understanding",
+      "question": "파일 이름에 해시가 들어가는 JS·CSS 파일은 `max-age`를 1년으로 길게 줘도 안전하다고 했습니다. 그 이유는 무엇인가요?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "내용이 바뀌면 파일 이름도 바뀌기 때문입니다"
+        },
+        {
+          "id": "b",
+          "text": "쓸 때마다 `ETag`로 서버에 확인하기 때문입니다"
+        },
+        {
+          "id": "c",
+          "text": "JS·CSS는 내용이 거의 바뀌지 않기 때문입니다"
+        },
+        {
+          "id": "d",
+          "text": "배포하면 브라우저 저장본이 지워지기 때문입니다"
+        }
+      ],
+      "answer": "a",
+      "explanation": "내용이 바뀌면 파일 이름(해시)이 바뀌어 브라우저에게는 전혀 다른 리소스가 되므로, 옛 저장본이 오래 남아 있어도 문제 될 일이 없습니다. `max-age` 기간 안에는 서버에 확인 요청 자체가 나가지 않으므로 `ETag` 검증 덕분이 아닙니다.",
+      "sources": [
+        "p27"
+      ],
+      "section": "실무 팁",
+      "review": {
+        "start": 495,
+        "end": 525
+      }
+    },
+    {
+      "id": "q10",
+      "checks": "understanding",
+      "question": "새로 배포하면 사용자가 바로 새 버전을 받아야 하는 HTML 문서에는, 이 강의에서 어떤 설정을 권했나요?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "`no-store`를 줍니다"
+        },
+        {
+          "id": "b",
+          "text": "`no-cache`를 줍니다"
+        },
+        {
+          "id": "c",
+          "text": "`max-age`를 1년으로 줍니다"
+        },
+        {
+          "id": "d",
+          "text": "`Cache-Control`을 생략합니다"
+        }
+      ],
+      "answer": "b",
+      "explanation": "HTML 문서에는 `no-cache`를 주는 것이 일반적이라고 했습니다. 저장은 하되 쓸 때마다 서버에 확인하므로, 새로 배포하면 사용자가 바로 새 버전을 받습니다. `max-age` 1년은 파일 이름에 해시가 들어가는 JS·CSS에 권한 설정입니다.",
+      "sources": [
+        "p28"
+      ],
+      "section": "실무 팁",
+      "review": {
+        "start": 525,
+        "end": 555
+      }
+    }
+  ]
+}
