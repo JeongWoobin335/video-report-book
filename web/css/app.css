@@ -52,6 +52,43 @@ main.narrow { max-width: 720px; margin: 0 auto; padding: 56px 16px 72px; }
 .quota { font-size: 13px; color: var(--muted); }
 .fineprint { margin: 16px 4px 0; font-size: 13px; color: var(--muted); }
 
+/* 서버 깨우는 중 */
+.wake { display: flex; align-items: center; gap: 16px; margin: 0 0 16px; padding: 14px 18px; border-radius: 16px; background: var(--accent-soft); transition: opacity .4s, transform .4s, background .4s; }
+.wake.awake { background: var(--ok-soft); }
+.wake.failed { background: var(--bad-soft); }
+.wake.leave { opacity: 0; transform: translateY(-8px); }
+.wake-art { width: 84px; height: 68px; flex: none; overflow: visible; }
+.wake-art .box rect { fill: var(--surface); stroke: var(--accent); stroke-width: 2.5; }
+.wake-art .box { transform-origin: 49px 82px; animation: breathe 3.2s ease-in-out infinite; }
+.wake-art .eye.shut, .wake-art .mouth, .wake-art .spark path { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; }
+.wake-art .eye.open circle { fill: var(--ok); }
+.wake-art .eye.open, .wake-art .spark { opacity: 0; }
+.wake-art .led { fill: var(--muted); }
+.wake-art .zzz text { fill: var(--accent); font: 700 13px system-ui, sans-serif; opacity: 0; animation: zzz 2.4s ease-in-out infinite; }
+.wake-art .zzz text:nth-child(2) { animation-delay: .5s; font-size: 11px; }
+.wake-art .zzz text:nth-child(3) { animation-delay: 1s; font-size: 9px; }
+.wake.awake .wake-art .zzz, .wake.awake .wake-art .eye.shut { display: none; }
+.wake.awake .wake-art .eye.open { opacity: 1; }
+.wake.awake .wake-art .box { animation: hop .5s ease-out 2; }
+.wake.awake .wake-art .box rect, .wake.awake .wake-art .mouth { stroke: var(--ok); }
+.wake.awake .wake-art .led { fill: var(--ok); }
+.wake.awake .wake-art .spark { opacity: 1; }
+.wake.awake .wake-art .spark path { stroke: var(--ok); }
+.wake.failed .wake-art .zzz { display: none; }
+.wake-body { flex: 1; min-width: 0; }
+.wake-title { margin: 0; font-weight: 700; font-size: 15.5px; }
+.wake-tip { margin: 2px 0 8px; font-size: 14px; color: var(--muted); min-height: 2.9em; transition: opacity .25s; }
+.wake-tip.swap { opacity: 0; }
+.wake-track { height: 6px; border-radius: 999px; background: var(--surface); overflow: hidden; }
+.wake-bar { height: 100%; width: 0; border-radius: 999px; background: var(--accent); transition: width .5s linear; }
+.wake.awake .wake-bar { background: var(--ok); }
+.wake.failed .wake-track { display: none; }
+.wake-sec { margin: 6px 0 0; font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; min-height: 1.3em; }
+@keyframes breathe { 50% { transform: scale(1.03, .97); } }
+@keyframes hop { 40% { transform: translateY(-8px); } }
+@keyframes zzz { 0% { opacity: 0; transform: translate(-3px, 5px); } 35% { opacity: 1; } 100% { opacity: 0; transform: translate(4px, -7px); } }
+@media (prefers-reduced-motion: reduce) { .wake-art .box, .wake-art .zzz text { animation: none; } .wake-art .zzz text { opacity: 1; } }
+
 .steps { list-style: none; margin: 0; padding: 0; }
 .steps li { display: flex; align-items: center; gap: 12px; padding: 10px 2px; color: var(--muted); border-bottom: 1px solid var(--line); }
 .steps li:last-child { border-bottom: 0; }

@@ -15,6 +15,7 @@ const TYPE_LABEL = { meeting: "회의", education: "교육·강의", general: "�
 let file = null;      // 사용자가 고른 영상 (이 기기 안에만 있다)
 let kind = "";        // 영상 종류 ("" = 자동 판별)
 let limits = null;
+let serverReady = null;  // 서버가 깨어나 /api/health에 답하면 풀리는 약속
 
 function show(view) {
   for (const v of ["view-upload", "view-progress", "view-result"]) $(v).hidden = v !== view;
@@ -72,17 +73,8 @@ function initUpload() {
   $("consent").addEventListener("change", refreshStart);
   $("start").addEventListener("click", () => start().catch(fail));
 
-  // 무료 서버는 한동안 요청이 없으면 잠든다. 깨어날 때까지(1분쯤) 안내를 띄우고 몇 번 다시 물어본다.
-  const waking = setTimeout(() => { if (!limits) $("quota").textContent = "서버를 깨우는 중입니다. 1분쯤 걸릴 수 있습니다…"; }, 2000);
-  const health = async (tries) => {
-    try { return await api("/api/health"); } catch (e) {
-      if (tries <= 1) throw e;
-      await new Promise((r) => setTimeout(r, 10000));
-      return health(tries - 1);
-    }
-  };
-  health(8).then((h) => {
-    clearTimeout(waking);
+  serverReady = wakeServer();
+  serverReady.then((h) => {
     limits = h;
     $("retention").textContent = h.limits.retention_hours;
     $("quota").textContent = h.today.left > 0
@@ -90,6 +82,71 @@ function initUpload() {
       : "오늘 만들 수 있는 분량을 다 썼습니다. 내일 다시 찾아 주세요.";
     refreshStart();
   }).catch((e) => { $("quota").textContent = e.message; });
+}
+
+// 무료 서버는 한동안 요청이 없으면 잠들고, 깨어나는 데 1분쯤 걸린다. 그동안 화면을 막지 않는다 —
+// 영상 고르기와 음성·화면 뽑기는 이 기기에서 하는 일이라 서버 없이도 먼저 해 둘 수 있다.
+const WAKE_TIPS = [
+  "영상은 이 기기 밖으로 나가지 않아요. 음성과 주요 화면만 뽑아서 보냅니다.",
+  "리포트의 모든 문장에는 영상의 몇 분 몇 초인지가 붙어요. 누르면 그 장면으로 갑니다.",
+  "퀴즈는 영상에 실제로 나온 내용으로만 만들어요. 지어낸 문제는 없습니다.",
+  "슬라이드와 말이 서로 다르면 어느 한쪽 편을 들지 않고 따로 모아 보여 드려요.",
+  "퀴즈를 틀리면 영상 전체가 아니라 다시 볼 구간만 알려 드려요.",
+  "8컷 만화는 리포트의 핵심만 대화로 풀어낸 요약입니다.",
+  "기다리는 동안 영상을 골라 두세요. 서버가 깨어나면 바로 이어집니다.",
+];
+
+function wakeServer() {
+  const EXPECTED = 60, GIVE_UP = 180;  // 초
+  const t0 = Date.now();
+  let shown = false, finished = false, tip = 0, timer = null;
+  const show = () => {
+    shown = true;
+    $("wake").hidden = false;
+    $("wake-tip").textContent = WAKE_TIPS[0];
+    timer = setInterval(() => {
+      const sec = (Date.now() - t0) / 1000;
+      // 끝을 모르는 기다림이라 막대는 90%까지만 천천히 다가간다
+      $("wake-bar").style.width = `${Math.round(90 * (1 - Math.exp(-sec / (EXPECTED / 2))))}%`;
+      $("wake-sec").textContent = `${Math.floor(sec)}초째 · 보통 1분 안쪽`;
+      if (Math.floor(sec / 6) !== tip) {
+        tip = Math.floor(sec / 6);
+        const el = $("wake-tip");
+        el.classList.add("swap");
+        setTimeout(() => { if (!finished) el.textContent = WAKE_TIPS[tip % WAKE_TIPS.length]; el.classList.remove("swap"); }, 250);
+      }
+    }, 500);
+  };
+  const delay = setTimeout(show, 1500);  // 깨어 있는 서버는 바로 답하므로 아무것도 띄우지 않는다
+  const done = (ok) => {
+    finished = true;
+    clearTimeout(delay);
+    clearInterval(timer);
+    if (!shown) return;
+    const wake = $("wake");
+    if (ok) {
+      wake.classList.add("awake");
+      $("wake-title").textContent = "서버가 깨어났어요!";
+      $("wake-bar").style.width = "100%";
+      $("wake-sec").textContent = "";
+      $("wake-tip").textContent = "이제 영상을 올리면 바로 만들기 시작합니다.";
+      setTimeout(() => { wake.classList.add("leave"); setTimeout(() => { wake.hidden = true; }, 400); }, 1800);
+    } else {
+      wake.classList.add("failed");
+      $("wake-title").textContent = "서버가 일어나지 않네요";
+      $("wake-tip").textContent = "잠시 뒤 새로고침해 주세요.";
+      $("wake-sec").textContent = "";
+    }
+  };
+  const ask = async () => {
+    for (;;) {
+      try { return await api("/api/health"); } catch (e) {
+        if ((Date.now() - t0) / 1000 > GIVE_UP) throw e;
+        await new Promise((r) => setTimeout(r, 4000));
+      }
+    }
+  };
+  return ask().then((h) => { done(true); return h; }, (e) => { done(false); throw e; });
 }
 
 // ── 2. 만드는 중 ──────────────────────────────────────────────────────────
@@ -128,7 +185,10 @@ async function start() {
   const audio = await extractAudio(file, { onProgress: (p) => { local.audio.note = `${Math.round(p * 100)}%`; renderSteps(local); } });
   local.audio = { state: audio ? "done" : "failed", note: audio ? `${(audio.blob.size / 1e6).toFixed(1)}MB` : "음성을 뽑지 못했습니다" };
   if (!audio && !frames.length) throw new Error("이 파일에서 음성도 화면도 읽지 못했습니다. 다른 형식(mp4 권장)으로 바꿔서 다시 시도해 주세요.");
-  local.send.state = "running";
+  local.send = { state: "running", note: limits ? "" : "서버가 깨어나는 중…" };
+  renderSteps(local, null);
+  await serverReady;
+  local.send.note = "";
   renderSteps(local);
 
   const job = await submitJob(API_BASE, { audio: audio && audio.blob, frames, duration: meta.duration,
