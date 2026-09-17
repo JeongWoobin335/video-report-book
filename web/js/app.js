@@ -15,6 +15,7 @@ const TYPE_LABEL = { meeting: "회의", education: "교육·강의", general: "�
 let file = null;      // 사용자가 고른 영상 (이 기기 안에만 있다)
 let kind = "";        // 영상 종류 ("" = 자동 판별)
 let limits = null;
+const SAMPLE_VIDEO = "../samples/lecture-http-caching.mp4";  // 직접 만든 가상 강의 (TTS 음성 + 슬라이드)
 let serverReady = null;  // 서버가 깨어나 /api/health에 답하면 풀리는 약속
 
 function show(view) {
@@ -71,6 +72,21 @@ function initUpload() {
     document.querySelectorAll("#kind button").forEach((x) => x.classList.toggle("on", x === b));
   });
   $("consent").addEventListener("change", refreshStart);
+  $("use-sample").addEventListener("click", async () => {
+    const btn = $("use-sample");
+    btn.disabled = true;
+    btn.textContent = "샘플 영상을 불러오는 중…";
+    try {
+      const blob = await fetch(SAMPLE_VIDEO).then((r) => { if (!r.ok) throw new Error(); return r.blob(); });
+      await pickFile(new File([blob], "샘플 강의 — HTTP 캐싱 기초.mp4", { type: "video/mp4" }));
+      $("consent").closest("label").scrollIntoView({ behavior: "smooth", block: "center" });
+    } catch (e) {
+      $("upload-error").textContent = "샘플 영상을 불러오지 못했습니다.";
+      $("upload-error").hidden = false;
+    }
+    btn.disabled = false;
+    btn.textContent = "샘플 강의 영상으로 해 보기 (4분)";
+  });
   $("start").addEventListener("click", () => start().catch(fail));
 
   serverReady = wakeServer();
@@ -134,7 +150,7 @@ function wakeServer() {
     } else {
       wake.classList.add("failed");
       $("wake-title").textContent = "서버가 일어나지 않네요";
-      $("wake-tip").textContent = "잠시 뒤 새로고침해 주세요.";
+      $("wake-tip").innerHTML = '잠시 뒤 새로고침해 주세요. 그동안 <a href="#demo">완성된 예시</a>는 보실 수 있습니다.';
       $("wake-sec").textContent = "";
     }
   };
@@ -219,20 +235,23 @@ function seekTo(t) {
   player.play();
 }
 
-function attachVideo(f) {
+function attachVideo(f) {  // 사용자가 고른 파일, 또는 예시 영상의 주소
   const player = $("player");
-  player.src = URL.createObjectURL(f);
+  player.src = typeof f === "string" ? f : URL.createObjectURL(f);
   player.hidden = false;
   $("reselect").hidden = true;
   $("seek-hint").hidden = false;
 }
 
-function showResult(status) {
+function showResult(status, demo = false) {
   show("view-result");
-  const base = `${API_BASE}/api/jobs/${status.id}/files/`;
+  const base = demo ? "demo/" : `${API_BASE}/api/jobs/${status.id}/files/`;
   $("result-title").textContent = status.title || "리포트";
   $("result-meta").textContent = (TYPE_LABEL[status.type] || "") + (status.failed_parts.length ? " · 일부를 만들지 못했습니다: " + status.failed_parts.join(", ") : "");
-  if (file) attachVideo(file);
+  if (demo) {
+    $("result-meta").textContent += " · 미리 만들어 둔 예시";
+    attachVideo(status.video);
+  } else if (file) attachVideo(file);
 
   const tabs = [];
   if (status.outputs.includes("report")) tabs.push({ key: "report", label: "리포트", src: base + "report.html" });
@@ -248,7 +267,7 @@ function showResult(status) {
     $("doc").hidden = key === "quiz";
     $("quiz").hidden = key !== "quiz";
     if (key === "quiz") {
-      if (!quizLoaded) { quizLoaded = true; loadQuiz(status).catch((e) => { $("quiz").innerHTML = `<p class="error">${esc(e.message)}</p>`; }); }
+      if (!quizLoaded) { quizLoaded = true; loadQuiz(status, demo).catch((e) => { $("quiz").innerHTML = `<p class="error">${esc(e.message)}</p>`; }); }
     } else if ($("doc").dataset.key !== key) {
       $("doc").dataset.key = key;
       $("doc").src = tab.src;
@@ -258,8 +277,22 @@ function showResult(status) {
   if (tabs.length) open(tabs[0].key);
 }
 
-async function loadQuiz(status) {
-  const quiz = await api(`/api/jobs/${status.id}/files/quiz.public.json`);
+// 예시 화면의 채점. 서버의 grade.py와 같은 규칙 — 틀린 문항의 다시 볼 구간을 모으고, 10초 안쪽으로 붙은 구간은 합친다.
+function gradeLocally(quiz, answers) {
+  const items = quiz.items.map((q) => ({ id: q.id, given: answers[q.id], answer: q.answer, correct: answers[q.id] === q.answer, explanation: q.explanation }));
+  const spans = [];
+  quiz.items.filter((q, i) => !items[i].correct).map((q) => ({ start: q.review.start, end: q.review.end, items: [q.id] }))
+    .sort((a, b) => a.start - b.start).forEach((sp) => {
+      const last = spans[spans.length - 1];
+      if (last && sp.start <= last.end + 10) { last.end = Math.max(last.end, sp.end); last.items.push(...sp.items); } else spans.push(sp);
+    });
+  spans.forEach((sp) => { sp.label = `${mmss(sp.start)}–${mmss(sp.end)}`; });
+  return { total: items.length, correct: items.filter((r) => r.correct).length, items, review_spans: spans,
+           review_seconds: spans.reduce((n, sp) => n + sp.end - sp.start, 0) };
+}
+
+async function loadQuiz(status, demo) {
+  const quiz = demo ? await fetch("demo/quiz.json").then((r) => r.json()) : await api(`/api/jobs/${status.id}/files/quiz.public.json`);
   const meeting = quiz.type === "meeting";
   const answers = {};
   $("quiz").innerHTML =
@@ -286,7 +319,7 @@ async function loadQuiz(status) {
     $("quiz-submit").disabled = true;
     let result;
     try {
-      result = await api(`/api/jobs/${status.id}/attempts`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ answers }) });
+      result = demo ? gradeLocally(quiz, answers) : await api(`/api/jobs/${status.id}/attempts`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ answers }) });
     } catch (e) {
       $("quiz-count").textContent = e.message;
       $("quiz-submit").disabled = false;
@@ -334,7 +367,9 @@ function initResult() {
 initUpload();
 initResult();
 const jobId = (location.hash.match(/job=([A-Za-z0-9_-]+)/) || [])[1];
-if (jobId) {
+if (location.hash === "#demo") {
+  fetch("demo/status.json").then((r) => r.json()).then((s) => showResult(s, true)).catch(fail);
+} else if (jobId) {
   show("view-progress");
   follow(jobId).catch(fail);
 }

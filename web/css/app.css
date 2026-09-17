@@ -38,6 +38,10 @@ main.narrow { max-width: 720px; margin: 0 auto; padding: 56px 16px 72px; }
 .drop.picked { border-style: solid; border-color: var(--accent); }
 .drop-title { font-weight: 600; font-size: 16px; }
 .drop-sub { color: var(--muted); font-size: 13.5px; }
+.try { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin: 12px 2px 0; font-size: 14px; color: var(--muted); }
+.try a, button.link { color: var(--accent); background: none; border: 0; border-radius: 0; padding: 0; font: inherit; font-weight: 600; text-decoration: none; cursor: pointer; }
+.try a:hover, button.link:hover { text-decoration: underline; }
+.try .sep { color: var(--line); }
 .field { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 18px 0 0; }
 .label { font-size: 14px; color: var(--muted); }
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
