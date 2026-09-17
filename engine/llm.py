@@ -1,7 +1,9 @@
 """Gemini 호출부. 표준 라이브러리만 쓴다.
 
 - 모델 목록을 차례로 시도한다. 무료 등급은 수요가 몰리면 503, 한도를 넘으면 429를 낸다 → 기다리지 않고 다음 모델로 넘어간다.
-- 한 번 응답한 모델을 그 실행 동안 계속 쓴다(단계마다 모델이 바뀌면 문체가 흔들린다).
+- 단계에 따라 시도 순서가 다르다. 판단이 필요한 단계(리포트 작성·검토)는 Flash부터, 나머지는 Lite부터.
+  무료 등급에서 Flash는 모델당 하루 20회뿐이라 아껴 쓴다. 어느 쪽이든 막히면 다른 쪽으로 넘어간다.
+- 한 번 응답한 모델을 같은 묶음 안에서는 계속 쓴다(호출마다 모델이 바뀌면 문체가 흔들린다).
 - 호출마다 토큰 사용량을 기록한다.
 """
 import base64
@@ -13,11 +15,13 @@ import urllib.error
 import urllib.request
 
 API = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
-# 앞의 것부터 시도한다. 무료 등급에서 Flash 계열은 모델당 하루 20회, Lite 계열은 하루 500회(2026-09 기준)라 Lite를 마지막 보루로 둔다.
-# GEMINI_MODELS 환경변수(쉼표 구분)로 바꿀 수 있다 — 유료 키로 갈아탈 때는 키와 이 목록만 바꾸면 된다.
+# 무료 등급(2026-09 기준): Flash 계열은 모델당 하루 20회, Lite 계열은 하루 500회.
+# GEMINI_MODELS(쉼표 구분)로 목록을, GEMINI_STRONG_STAGES로 Flash를 먼저 쓸 단계를 바꾼다.
+# 유료 키로 갈아탈 때는 키와 이 둘만 바꾸면 된다 (예: GEMINI_STRONG_STAGES=all 이면 전 단계가 목록 순서대로).
 DEFAULT_MODELS = [m.strip() for m in os.environ.get("GEMINI_MODELS", "").split(",") if m.strip()] or [
     "gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-2.5-flash",
     "gemini-3.5-flash-lite", "gemini-3.1-flash-lite"]
+STRONG_STAGES = {x.strip() for x in os.environ.get("GEMINI_STRONG_STAGES", "report,review").split(",") if x.strip()}
 MIME = {".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".wav": "audio/wav", ".mp3": "audio/mp3", ".m4a": "audio/mp4", ".ogg": "audio/ogg"}
 
 
@@ -46,7 +50,7 @@ class Gemini:
         parts = [part(x) for x in (list(files) + (list(user) if isinstance(user, (list, tuple)) else [user]))]
         config = {"temperature": temperature, "maxOutputTokens": max_output}
 
-        for model in [m for m in self.models if m not in self.skipped]:
+        for model in [m for m in self.order(stage) if m not in self.skipped]:
             for attempt in range(3):
                 if model in self.no_system or model.startswith("gemma"):
                     body = {"contents": [{"role": "user", "parts": [{"text": system + "\n\n---\n"}] + parts}], "generationConfig": config}
@@ -83,14 +87,25 @@ class Gemini:
                 self.usage.append({"stage": stage, "model": model, "in": u.get("promptTokenCount", 0),
                                    "out": u.get("candidatesTokenCount", 0), "thinking": u.get("thoughtsTokenCount", 0),
                                    "sec": round(time.time() - t0, 1)})
-                self.models = [model] + [m for m in self.models if m != model]  # 응답한 모델을 맨 앞으로
+                tier = lambda m: "lite" in m  # 응답한 모델을 같은 묶음(Lite / 그 외)의 맨 앞으로
+                first = self.models.index(next(m for m in self.models if tier(m) == tier(model)))
+                self.models.remove(model)
+                self.models.insert(first, model)
                 return strip_fence(text)
         raise LLMError("응답하는 모델이 없습니다: " + ", ".join(f"{m}({why})" for m, why in self.skipped.items()))
+
+    def order(self, stage):
+        """이 단계에서 시도할 모델 순서. 고친 글을 다시 쓰는 호출('report-fix')은 원래 단계와 같게 본다."""
+        base = stage.split("-")[0]
+        if "all" in STRONG_STAGES or base in STRONG_STAGES:
+            return self.models
+        return [m for m in self.models if "lite" in m] + [m for m in self.models if "lite" not in m]
 
     def totals(self):
         t = {k: sum(u[k] for u in self.usage) for k in ("in", "out", "thinking", "sec")}
         t["calls"] = len(self.usage)
         t["models"] = sorted({u["model"] for u in self.usage})
+        t["by_stage"] = {u["stage"]: u["model"] for u in self.usage}
         return t
 
 

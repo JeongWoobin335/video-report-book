@@ -68,6 +68,7 @@ def public(status: dict):
     """상태에서 밖에 보여 줄 것만 추린다."""
     keep = ("id", "state", "stage", "stages", "title", "type", "created_at", "finished_at", "error", "failed_parts", "outputs")
     out = {k: status.get(k) for k in keep}
+    out["models"] = (status.get("usage") or {}).get("by_stage")  # 단계별로 어떤 모델이 썼는지 (품질 확인용)
     out["queue_position"] = jobs.queue_position(status["id"]) if status["state"] == "queued" else 0
     return out
 

@@ -156,7 +156,7 @@ def process(job_id: str):
         write_status(job_id, state="failed", error=str(e)[:300])
     finally:
         t = llm.totals()
-        write_status(job_id, finished_at=now(), usage={k: t[k] for k in ("calls", "in", "out", "thinking", "sec", "models")},
+        write_status(job_id, finished_at=now(), usage={k: t[k] for k in ("calls", "in", "out", "thinking", "sec", "models", "by_stage")},
                      skipped_models=llm.skipped)
         for leftover in ("audio.wav",):  # 결과를 만드는 데 더는 필요 없는 큰 파일
             (work / leftover).unlink(missing_ok=True)
