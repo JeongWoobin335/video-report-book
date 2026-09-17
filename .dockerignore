@@ -1,0 +1,9 @@
+.git
+work/
+data/
+samples/
+docs/
+tools/
+**/__pycache__
+**/evals/
+.claude/

@@ -1,0 +1,19 @@
+{
+  "skill_name": "comprehension-quiz",
+  "evals": [
+    {
+      "id": 1,
+      "name": "lecture-http-caching",
+      "prompt": "신입 온보딩 강의(웹 성능 입문 3강) 리포트는 만들어놨고, 이제 신입들이 영상을 제대로 봤는지 확인할 퀴즈가 필요해. 이 폴더에 report.json 있어. 객관식으로 10문제 정도.",
+      "expected_output": "4지선다 10문항 안팎, 존댓말. '이해' 문항이 절반 이상. no-cache/no-store 혼동이 문항과 오답 보기에 활용됨. max-age=3600의 기간(1시간 vs 하루 — 자료와 발언이 달랐던 부분)은 출제하지 않음. s-maxage(슬라이드에만 있음)는 출제하지 않음. 영상에 없는 지식(CDN 동작 등)이 필요한 문항 없음. 문항마다 근거 항목과 다시 볼 구간. quiz.json, quiz.html 생성.",
+      "files": ["evals/files/lecture-http-caching/report.json", "evals/files/lecture-http-caching/timeline.md"]
+    },
+    {
+      "id": 2,
+      "name": "meeting-beta-schedule",
+      "prompt": "베타 출시 일정 회의에 못 들어온 팀원들이 회의록이랑 녹화본 보고 내용 제대로 파악했는지 체크하고 싶어. 폴더에 report.json 있으니까 그걸로 확인용 문제 만들어줘. 너무 시험 같지 않게.",
+      "expected_output": "5~8문항, 시험이 아니라 확인의 어조(제목에 퀴즈/테스트/평가 없음). 출시일 문항의 오답에 10/14와 10/21이 있음. 담당 미정인 스토어 심사 확인, 미결인 푸시 알림이 문항으로 나옴. QA 기간(2주 vs 3주)은 출제하지 않음. '누가 반대했나' 식으로 사람의 의견을 지목하는 문항 없음. 화자 C를 보기에 넣지 않음. 기한은 '다음 주 수요일' 그대로.",
+      "files": ["evals/files/meeting-beta-schedule/report.json", "evals/files/meeting-beta-schedule/timeline.md"]
+    }
+  ]
+}

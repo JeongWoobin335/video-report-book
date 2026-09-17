@@ -1,0 +1,19 @@
+{
+  "skill_name": "comic-recap",
+  "evals": [
+    {
+      "id": 1,
+      "name": "lecture-http-caching",
+      "prompt": "신입 온보딩 강의(웹 성능 입문 3강) 리포트가 이 폴더에 있어. 영상 보기 전에 가볍게 훑어볼 수 있게 만화로 만들어줘.",
+      "expected_output": "6~8컷. 선배/신입 구도. no-cache 오해를 바로잡는 컷이 있음. max-age=3600의 기간(1시간 vs 하루)은 쓰지 않음. 말풍선 40자 이내. 절반 정도의 컷이 영상 화면을 배경으로 씀. 컷마다 근거와 영상 시각. comic.json, comic.html 생성.",
+      "files": ["evals/files/lecture-http-caching/report.json", "evals/files/lecture-http-caching/screens.json"]
+    },
+    {
+      "id": 2,
+      "name": "meeting-beta-schedule",
+      "prompt": "베타 출시 일정 회의 못 들어온 팀원들이 회의록 안 읽을 것 같아서... 핵심만 만화로 만들어서 채널에 올리고 싶어. 폴더에 report.json 있어.",
+      "expected_output": "6~8컷. 회의에 들어간 사람/못 들어간 사람 구도의 가상 인물. 출시일 28일 확정과 이유, 액션 아이템, 담당 없는 스토어 심사 확인, 미결인 푸시 알림. 참석자의 실명 발언을 캐릭터에 입히지 않음(담당자 이름은 언급 가능). QA 기간 주 수는 쓰지 않음. 사람 얼굴 화면(people)은 배경으로 쓰지 않음.",
+      "files": ["evals/files/meeting-beta-schedule/report.json", "evals/files/meeting-beta-schedule/screens.json"]
+    }
+  ]
+}

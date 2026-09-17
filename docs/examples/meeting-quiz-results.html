@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>모바일 앱 베타 출시 일정 점검 회의 — 내용 확인 — 결과</title>
+<style>
+  :root {
+    --bg: #fbfaf7; --surface: #ffffff; --text: #1f2328; --muted: #6b7280; --line: #e5e2da;
+    --accent: #2f5fd0; --accent-soft: #e8eefc; --ok: #1a7f4b; --ok-soft: #d8efe2; --bad: #b42318; --bad-soft: #f9d9d5; --warn-soft: #fff4e0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181c; --surface: #1e2126; --text: #e6e8eb; --muted: #9aa2ad; --line: #30353d;
+      --accent: #8fb0ff; --accent-soft: #232c45; --ok: #6fd39b; --ok-soft: #1f4430; --bad: #ff9b91; --bad-soft: #5a2a25; --warn-soft: #3a2d14;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+    line-height: 1.65; word-break: keep-all; overflow-wrap: anywhere;
+  }
+  main { max-width: 820px; margin: 0 auto; padding: 40px 16px 80px; }
+  h1 { font-size: 26px; line-height: 1.3; margin: 0 0 4px; }
+  .meta { color: var(--muted); font-size: 14px; margin: 0 0 24px; }
+  h2 { font-size: 19px; margin: 36px 0 12px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin: 0 0 12px; }
+  #insights { background: var(--warn-soft); border-radius: 14px; padding: 4px 22px 14px; }
+  #insights:empty { display: none; }
+  #insights h2 { margin-top: 18px; }
+  #insights li { margin: 10px 0; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .stat { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .stat b { display: block; font-size: 24px; font-variant-numeric: tabular-nums; }
+  .stat span { color: var(--muted); font-size: 13px; }
+  .q-head { display: flex; gap: 12px; align-items: baseline; }
+  .q-head .rate { margin-left: auto; font-weight: 700; font-variant-numeric: tabular-nums; flex: none; }
+  .q-head .rate.low { color: var(--bad); }
+  .tags { margin: 4px 0 10px; font-size: 12.5px; color: var(--muted); }
+  .tag { display: inline-block; border: 1px solid var(--line); border-radius: 999px; padding: 0 8px; margin-right: 4px; }
+  .tag.flag { border-color: var(--bad); color: var(--bad); }
+  .choice { display: grid; grid-template-columns: 1fr 90px 34px; gap: 10px; align-items: center; font-size: 14.5px; margin: 6px 0; }
+  .bar { height: 10px; border-radius: 5px; background: var(--line); overflow: hidden; }
+  .bar i { display: block; height: 100%; background: var(--bad-soft); }
+  .choice.right .bar i { background: var(--ok); }
+  .choice.right span:first-child { font-weight: 600; }
+  .choice .n { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+  code { font-family: ui-monospace, Consolas, monospace; font-size: 0.92em; background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .span { font-variant-numeric: tabular-nums; color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 1px 9px; font-size: 13px; white-space: nowrap; }
+</style>
+</head>
+<body>
+<main>
+  <h1>모바일 앱 베타 출시 일정 점검 회의 — 내용 확인</h1>
+  <p class="meta" id="meta"></p>
+  <div id="insights"><p>응답 5명 기준입니다. 개인 성적이 아니라 &quot;회의 내용 중 무엇이 잘못 전달됐는지&quot;로 읽어 주세요.</p>
+<h2>발견</h2>
+<ul>
+<li><strong>스토어 심사 기간 확인을 &quot;지현 님이 맡았다&quot;고 알고 있는 분이 5명 중 3명입니다.</strong> 실제로는 &quot;일단 적어만 두고&quot; 넘어가서 담당자도 기한도 정해지지 않았고, 그렇게 제대로 알고 있는 분은 2명뿐입니다(정답보다 오답이 많은 유일한 항목). 모두가 누군가 하고 있다고 믿는 채로 아무도 하지 않을 위험이 있습니다. 28일에서 역산해야 하는 일이므로 → 재공지보다 먼저 담당자와 기한을 지금 지정해서 채널에 알리시길 권합니다. [06:10–07:10]</li>
+<li><strong>베타 출시일을 10월 21일로 알고 있는 분이 5명 중 2명입니다.</strong> 21일은 회의 중 제안됐다가 QA 기간을 채울 수 없어 기각된 날짜이고, 확정일은 10월 28일입니다. 흥미롭게도 &quot;21일 안이 왜 기각됐는지&quot;는 5명 모두 알고 있어서, 논의 과정은 전달됐는데 최종 결론만 흐릿하게 남은 것으로 보입니다. → &quot;베타 출시일은 10월 28일로 확정(21일 안은 기각)&quot;을 채널에 한 줄로 다시 공지하시길 권합니다. [03:40–04:10]</li>
+<li><strong>푸시 알림을 &quot;베타에서 빼기로 했다&quot;고 알고 있는 분이 1명 있습니다.</strong> 실제로는 결론을 내지 않았고, 민수 님의 추가 공수 산정(금요일)을 보고 다음 주 회의에서 정합니다. 1명이라 경향이라 하긴 어렵지만, 미결 사항이 결정으로 굳어 전달되면 관련 작업이 멈출 수 있습니다. → 위 공지에 &quot;푸시 알림 포함 여부는 미정, 다음 주 회의에서 결정&quot;을 한 줄 덧붙이시면 충분합니다. [07:40–08:10]</li>
+<li><strong>크래시 수정 테스트 빌드 기한을 &quot;이번 주 금요일&quot;로 알고 있는 분이 1명 있습니다.</strong> 금요일은 온보딩 시안 수정본(과 푸시 공수 산정)의 기한이고, 빌드는 다음 주 수요일입니다. 한 분의 혼동이라 전체 조치는 필요 없고 → 액션 아이템을 &quot;담당자 · 기한&quot; 표로 한 번 올려 두면 함께 해결됩니다. [05:22–05:52]</li>
+<li><strong>잘 전달된 것:</strong> 21일 안 기각 사유, 크래시율 목표(1% 아래), 푸시 공수 산정, 경영진 공유 담당(지현 님)은 5명 모두 정확히 알고 있습니다. 다만 8개 항목 중 4개가 전원 정답이라, 이 항목들은 회의 내용을 몰라도 고를 수 있었을 가능성은 남습니다.</li>
+</ul></div>
+  <div class="stats" id="stats"></div>
+  <h2 id="items-title">문항별 응답</h2>
+  <div id="items"></div>
+  <div id="extra"></div>
+</main>
+<script id="data" type="application/json">{"title": "모바일 앱 베타 출시 일정 점검 회의 — 내용 확인", "type": "meeting", "respondents": 5, "average_rate": 0.82, "all_correct_share": 0.5, "by_checks": {"recall": 0.82}, "by_section": {"결정 사항": 0.8, "1. 베타 출시일 확정": 1.0, "액션 아이템": 0.8}, "items": [{"id": "q1", "question": "이번 회의에서 베타 출시일은 언제로 확정됐나요?", "checks": "recall", "section": "결정 사항", "correct_rate": 0.6, "answer": "c", "answer_text": "10월 28일", "choices": [{"id": "a", "text": "10월 14일", "count": 0}, {"id": "b", "text": "11월 4일", "count": 0}, {"id": "c", "text": "10월 28일", "count": 3}, {"id": "d", "text": "10월 21일", "count": 2}], "top_wrong": {"id": "d", "text": "10월 21일", "count": 2}, "review": {"start": 220, "end": 250}, "flags": []}, {"id": "q2", "question": "일주일만 미루는 10월 21일 안이 받아들여지지 않은 이유는 무엇인가요?", "checks": "recall", "section": "1. 베타 출시일 확정", "correct_rate": 1.0, "answer": "a", "answer_text": "잡아 둔 QA 기간을 다 채울 수 없어서", "choices": [{"id": "a", "text": "잡아 둔 QA 기간을 다 채울 수 없어서", "count": 5}, {"id": "b", "text": "경영진 보고 일정과 맞지 않아서", "count": 0}, {"id": "c", "text": "스토어 심사가 그때까지 끝나지 않아서", "count": 0}, {"id": "d", "text": "푸시 알림 개발 공수가 더 필요해서", "count": 0}], "top_wrong": null, "review": {"start": 178, "end": 208}, "flags": []}, {"id": "q3", "question": "결제 화면 크래시를 수정한 테스트 빌드는 언제까지 올리기로 했나요?", "checks": "recall", "section": "액션 아이템", "correct_rate": 0.8, "answer": "c", "answer_text": "다음 주 수요일", "choices": [{"id": "a", "text": "다음 주 월요일", "count": 0}, {"id": "b", "text": "다음 주 금요일", "count": 0}, {"id": "c", "text": "다음 주 수요일", "count": 4}, {"id": "d", "text": "이번 주 금요일", "count": 1}], "top_wrong": {"id": "d", "text": "이번 주 금요일", "count": 1}, "review": {"start": 322, "end": 352}, "flags": []}, {"id": "q4", "question": "베타 전까지 크래시율을 어느 수준으로 내리는 것을 목표로 잡았나요?", "checks": "recall", "section": "결정 사항", "correct_rate": 1.0, "answer": "d", "answer_text": "1% 아래", "choices": [{"id": "a", "text": "0.5% 아래", "count": 0}, {"id": "b", "text": "2% 아래", "count": 0}, {"id": "c", "text": "지금 수치의 절반", "count": 0}, {"id": "d", "text": "1% 아래", "count": 5}], "top_wrong": null, "review": {"start": 335, "end": 365}, "flags": []}, {"id": "q5", "question": "요즘 스토어 심사 기간이 얼마나 걸리는지 확인하는 일은 누가 맡기로 했나요?", "checks": "recall", "section": "액션 아이템", "correct_rate": 0.4, "answer": "a", "answer_text": "담당자가 정해지지 않았습니다", "choices": [{"id": "a", "text": "담당자가 정해지지 않았습니다", "count": 2}, {"id": "b", "text": "민수 님이 맡기로 했습니다", "count": 0}, {"id": "c", "text": "지현 님이 맡기로 했습니다", "count": 3}, {"id": "d", "text": "다음 주 회의에서 정하기로 했습니다", "count": 0}], "top_wrong": {"id": "c", "text": "지현 님이 맡기로 했습니다", "count": 3}, "review": {"start": 370, "end": 430}, "flags": ["low", "wrong_beats_right"]}, {"id": "q6", "question": "푸시 알림을 베타에 넣을지는 어떻게 됐나요?", "checks": "recall", "section": "결정 사항", "correct_rate": 0.8, "answer": "d", "answer_text": "다음 주 회의에서 정하기로 했습니다", "choices": [{"id": "a", "text": "온보딩 직후 알림 하나만 넣기로 했습니다", "count": 0}, {"id": "b", "text": "베타에 넣기로 했습니다", "count": 0}, {"id": "c", "text": "베타에서 빼기로 했습니다", "count": 1}, {"id": "d", "text": "다음 주 회의에서 정하기로 했습니다", "count": 4}], "top_wrong": {"id": "c", "text": "베타에서 빼기로 했습니다", "count": 1}, "review": {"start": 460, "end": 490}, "flags": []}, {"id": "q7", "question": "푸시 알림 포함 여부를 정하기 위해, 금요일까지 준비하기로 한 것은 무엇인가요?", "checks": "recall", "section": "액션 아이템", "correct_rate": 1.0, "answer": "b", "answer_text": "베타에 넣을 때 드는 추가 공수 산정", "choices": [{"id": "a", "text": "온보딩 직후 알림의 문구 시안 작성", "count": 0}, {"id": "b", "text": "베타에 넣을 때 드는 추가 공수 산정", "count": 5}, {"id": "c", "text": "푸시 유무에 따른 리텐션 자료 정리", "count": 0}, {"id": "d", "text": "푸시 없이 출시할 때의 일정 재산정", "count": 0}], "top_wrong": null, "review": {"start": 475, "end": 505}, "flags": []}, {"id": "q8", "question": "베타 출시일이 바뀐 것을 경영진에 공유하는 일은 어떻게 하기로 했나요?", "checks": "recall", "section": "액션 아이템", "correct_rate": 1.0, "answer": "b", "answer_text": "지현 님이 공유하기로 했습니다", "choices": [{"id": "a", "text": "민수 님이 공유하기로 했습니다", "count": 0}, {"id": "b", "text": "지현 님이 공유하기로 했습니다", "count": 5}, {"id": "c", "text": "다음 주 회의 뒤에 공유하기로 했습니다", "count": 0}, {"id": "d", "text": "담당자가 정해지지 않았습니다", "count": 0}], "top_wrong": null, "review": {"start": 220, "end": 250}, "flags": []}], "hot_spans": [{"start": 370, "end": 430, "items": ["q5"], "label": "06:10–07:10"}]}</script>
+<script>
+  var S = JSON.parse(document.getElementById("data").textContent), meeting = S.type === "meeting";
+  var FLAG = { low: "정답률 낮음", wrong_beats_right: "오답이 정답보다 많음", scattered: "오답이 흩어짐", strong_miss: "잘하는 사람이 틀림" };
+  var CHECK = { recall: "기억", understanding: "이해" };
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function md(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/`(.+?)`/g, "<code>$1</code>"); }
+  function pct(x) { return x == null ? "–" : Math.round(x * 100) + "%"; }
+
+  document.getElementById("meta").textContent = "응답 " + S.respondents + "명" + (meeting ? " · 성적이 아니라, 회의 내용이 어디서 다르게 전달됐는지를 보는 자료입니다" : "");
+
+  var stats = meeting ? [] : [[pct(S.average_rate), "평균 정답률"]];
+  if (!meeting) Object.keys(S.by_checks).forEach(function (k) { stats.push([pct(S.by_checks[k]), CHECK[k] + " 문항 정답률"]); });
+  stats.push([S.items.filter(function (i) { return i.flags.length; }).length + "개", meeting ? "다르게 알고 있는 분이 많은 항목" : "살펴볼 문항"]);
+  document.getElementById("stats").innerHTML = stats.map(function (s) { return '<div class="stat"><b>' + s[0] + "</b><span>" + s[1] + "</span></div>"; }).join("");
+
+  if (meeting) document.getElementById("items-title").textContent = "항목별 응답";
+  document.getElementById("items").innerHTML = S.items.map(function (it, i) {
+    return '<div class="card"><div class="q-head"><span>' + (i + 1) + ". " + md(it.question) + '</span><span class="rate' + (it.correct_rate < 0.5 ? " low" : "") + '">' + pct(it.correct_rate) + "</span></div>" +
+      '<div class="tags"><span class="tag">' + esc(it.section) + "</span>" + (meeting ? "" : '<span class="tag">' + CHECK[it.checks] + "</span>") +
+      it.flags.map(function (f) { return '<span class="tag flag">' + FLAG[f] + "</span>"; }).join("") + "</div>" +
+      it.choices.map(function (c) {
+        return '<div class="choice' + (c.id === it.answer ? " right" : "") + '"><span>' + (c.text ? md(c.text) : esc(c.id)) + '</span><div class="bar"><i style="width:' + (c.count / S.respondents * 100) + '%"></i></div><span class="n">' + c.count + "명</span></div>";
+      }).join("") + "</div>";
+  }).join("");
+
+  var extra = "";
+  if (S.hot_spans.length) {
+    extra += "<h2>" + (meeting ? "다시 공유가 필요한 구간" : "많이 틀린 구간") + '</h2><div class="card">' +
+      S.hot_spans.map(function (h) { return '<span class="span">' + h.label + "</span>"; }).join(" ") + "</div>";
+  }
+  if (S.people) {
+    extra += '<h2>응답자별</h2><div class="card"><table><tr><th>응답자</th><th>정답</th><th>다시 볼 구간</th></tr>' +
+      S.people.map(function (p) {
+        return "<tr><td>" + esc(p.respondent) + "</td><td>" + p.correct + " / " + p.total + "</td><td>" +
+          (p.review.map(function (r) { return '<span class="span">' + r + "</span>"; }).join(" ") || "–") + "</td></tr>";
+      }).join("") + "</table></div>";
+  }
+  document.getElementById("extra").innerHTML = extra;
+</script>
+</body>
+</html>
