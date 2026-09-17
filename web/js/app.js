@@ -386,4 +386,5 @@ if (devSrc) {
 }
 
 // 같은 탭에서 주소의 #job=… 만 바뀐 경우(결과 링크를 붙여 넣었을 때)에도 그 작업을 연다
-window.addEventListener("hashchange", () => location.reload());
+// (#how, #upload 같은 화면 안 이동은 그대로 둔다)
+window.addEventListener("hashchange", () => { if (/^#(demo$|job=)/.test(location.hash)) location.reload(); });
