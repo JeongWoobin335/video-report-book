@@ -5,6 +5,7 @@
 - 화면: `web/` — 정적 파일, GitHub Pages. 영상은 기기 밖으로 나가지 않고 브라우저가 음성과 주요 화면만 뽑아 보낸다.
 - 백엔드: `backend/` (FastAPI) + `engine/` (Gemini 호출·검증 루프). 실행과 설정은 [backend/README.md](backend/README.md).
 - 지식과 도구: `skills/` — 단계별 규칙(references)과 검증·렌더 스크립트(scripts).
+- 쓰는 오픈소스·외부 API·AI와 라이선스: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
 - 설계와 진행 기록: [docs/skill-bundle-design.md](docs/skill-bundle-design.md)
 
 ## 로컬에서 한 번에 띄우기
