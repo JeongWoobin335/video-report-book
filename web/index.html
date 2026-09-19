@@ -11,78 +11,41 @@
 </head>
 <body>
 
-<!-- 1. 올리기 (메인 화면) -->
+<!-- 1. 올리기 (메인 화면) — 이 서비스만 가진 것이 만화라서, 소개도 만화로 한다 -->
 <div id="view-upload" class="landing">
   <header class="topbar">
     <a class="brand" href="./"><span class="brand-mark">▶</span>영상 리포트북</a>
     <nav>
-      <a href="#how">어떻게 동작하나요</a>
+      <a href="#strip">네 컷 설명</a>
       <a href="#demo">완성된 예시</a>
       <a href="https://github.com/JeongWoobin335/video-report-book" target="_blank" rel="noopener">GitHub ↗</a>
     </nav>
   </header>
 
-  <section class="hero2">
-    <div class="hero-copy">
-      <p class="eyebrow">영상 → 리포트 · 퀴즈 · 만화</p>
-      <h1>영상을 <em>봤는지</em>가 아니라,<br><mark>이해했는지</mark>를 확인합니다.</h1>
-      <p class="lead">강의·교육·회의 영상을 올리면 <strong>음성과 화면을 함께 읽어</strong> 리포트를 만들고, 그 리포트로 <strong>이해도 퀴즈</strong>와 <strong>요약 만화</strong>를 만듭니다. 틀린 문제는 영상의 어느 구간을 다시 보면 되는지 바로 알려 드립니다.</p>
-      <div class="cta">
-        <a class="btn" href="#upload">영상 올리기</a>
-        <a class="btn ghost" href="#demo">기다리지 않고 예시 보기 →</a>
-      </div>
-      <ul class="facts">
-        <li><b>0원</b>가입·결제 없이</li>
-        <li><b>1~4분</b>영상 한 편 처리</li>
-        <li><b>기기 안에서</b>영상은 밖으로 나가지 않음</li>
+  <!-- 첫 컷: 서비스가 던지는 질문을 두 사람의 대화로 -->
+  <section class="cover" aria-label="영상 리포트북 소개">
+    <div class="cover-panel">
+      <span class="cover-tag">제 1 화</span>
+      <div class="cover-bubble left">강의 영상,<br>끝까지 다 봤어요!</div>
+      <div class="cover-bubble right shout">좋아. 그런데…<br><b>이해는 했어?</b></div>
+      <span class="cover-fx">…!</span>
+      <span class="peep left" data-body="sporty" data-head="newbie" data-face="smile-big" data-halo="#ff9aa8"></span>
+      <span class="peep right" data-body="paper" data-head="mentor" data-face="suspicious" data-halo="#ffd65a" data-flip></span>
+      <div class="cover-floor"></div>
+    </div>
+    <div class="cover-caption">
+      <h1>봤다고 해서, 이해한 건 아니니까.</h1>
+      <p>영상을 올리면 <strong>음성과 화면을 함께 읽어 리포트</strong>를 만들고, 그 리포트로 <strong>퀴즈와 만화</strong>를 만들어 정말 이해했는지 확인합니다. 틀린 문제는 영상의 <strong>어느 구간을 다시 보면 되는지</strong> 짚어 드립니다.</p>
+      <ul class="stamps">
+        <li>가입·결제 없음</li>
+        <li>한 편에 1~4분</li>
+        <li>영상은 기기 밖으로 안 나감</li>
       </ul>
-    </div>
-
-    <!-- 결과물 세 가지를 겹쳐 보여 주는 그림 -->
-    <div class="hero-art" aria-hidden="true">
-      <div class="art-card art-report">
-        <p class="art-label">리포트</p>
-        <p class="art-h">no-cache와 no-store</p>
-        <p class="art-li"><code>no-cache</code>는 저장은 하되 쓸 때마다 서버에 확인한다 <span class="chip">01:58</span></p>
-        <p class="art-li"><code>no-store</code>는 아예 저장하지 않는다 <span class="chip">02:15</span></p>
-        <p class="art-warn">⚠ 슬라이드엔 "1시간", 강사는 "하루" — 따로 표시</p>
-      </div>
-      <div class="art-card art-comic">
-        <div class="mini-bubble">저장은 하되,<br>매번 물어보는 거야!</div>
-        <svg class="mini-peep left" viewBox="-75 0 1000 1200"><circle cx="425" cy="560" r="430" fill="#ff9aa8" opacity=".55"/><image href="img/peeps/newbie-body.svg" x="16" y="467" width="818" height="733"/><image href="img/peeps/newbie-head.svg" x="190" y="40" width="473" height="567"/><image href="img/peeps/newbie-face.svg" x="349" y="226" width="289" height="293"/></svg>
-        <svg class="mini-peep right" viewBox="-75 0 1000 1200"><circle cx="425" cy="560" r="430" fill="#ffd65a" opacity=".55"/><g transform="translate(850 0) scale(-1 1)"><image href="img/peeps/mentor-body.svg" x="16" y="467" width="900" height="733"/><image href="img/peeps/mentor-head.svg" x="190" y="40" width="473" height="567"/><image href="img/peeps/mentor-face.svg" x="349" y="226" width="289" height="293"/></g></svg>
-        <span class="mini-mark">!</span>
-      </div>
-      <div class="art-card art-quiz">
-        <p class="art-label">퀴즈</p>
-        <p class="art-h">민감한 응답에 알맞은 설정은?</p>
-        <p class="art-choice wrong">no-cache <span>선택하신 답</span></p>
-        <p class="art-choice right">no-store <span>정답</span></p>
-        <p class="art-replay">▶ 다시 보기 02:04–02:41</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="band" id="how">
-    <h2>어떻게 동작하나요</h2>
-    <ol class="flow">
-      <li><span class="step">1</span><h3>영상을 고릅니다</h3><p>브라우저가 이 기기 안에서 <strong>음성과 주요 화면만</strong> 뽑습니다. 영상 파일은 어디로도 올라가지 않습니다.</p></li>
-      <li><span class="step">2</span><h3>AI가 듣고, 봅니다</h3><p>말을 받아적고 슬라이드·화면의 글자를 읽어 <strong>하나의 리포트</strong>로 합칩니다. 모든 문장에 몇 분 몇 초인지가 붙습니다.</p></li>
-      <li><span class="step">3</span><h3>이해했는지 확인합니다</h3><p>리포트에서 <strong>퀴즈와 8컷 만화</strong>를 만듭니다. 틀린 문항은 다시 볼 구간으로 바로 이동합니다.</p></li>
-    </ol>
-  </section>
-
-  <section class="band">
-    <h2>받아 보는 것</h2>
-    <div class="features">
-      <article><span class="ico">📄</span><h3>근거가 붙은 리포트</h3><p>항목마다 영상의 시각이 달려 있어 누르면 그 장면으로 갑니다. 슬라이드와 말이 <strong>서로 다르면 어느 쪽 편도 들지 않고</strong> 따로 모아 보여 줍니다. PDF로 저장할 수 있습니다.</p></article>
-      <article><span class="ico">✅</span><h3>지어내지 않는 퀴즈</h3><p>영상에 실제로 나온 내용으로만 문제를 냅니다. 채점 뒤에는 점수보다 <strong>"이 구간만 다시 보세요"</strong>를 먼저 알려 드립니다. 정답은 서버에만 있습니다.</p></article>
-      <article><span class="ico">💬</span><h3>대화로 푸는 요약 만화</h3><p>핵심을 선배와 신입의 대화 8컷으로 옮깁니다. 영상의 실제 슬라이드가 컷 안에 그대로 나오고, 컷마다 영상 시각이 달려 있습니다.</p></article>
     </div>
   </section>
 
   <section class="upload-wrap" id="upload">
-    <h2>직접 해 보기</h2>
+    <h2>지금 해 보기</h2>
 
     <!-- 무료 서버가 잠들어 있을 때만 나타난다. 화면을 막지 않는다 — 아래에서 영상을 먼저 골라 둘 수 있다. -->
     <section class="wake" id="wake" hidden aria-live="polite">
@@ -153,11 +116,93 @@
     </section>
   </section>
 
+  <!-- 동작 방식: 네 컷 만화 -->
+  <section class="strip-wrap" id="strip">
+    <h2>네 컷으로 보는 동작 방식</h2>
+    <div class="strip">
+      <figure class="cut c-sky">
+        <span class="cut-n">1</span>
+        <div class="cut-bubble">이 영상으로 할게요.</div>
+        <span class="peep solo" data-body="macbook" data-head="newbie" data-face="smile" data-halo="#ff9aa8"></span>
+        <figcaption><b>영상을 고릅니다.</b> 브라우저가 기기 안에서 음성과 주요 화면만 뽑습니다. 영상 파일은 올라가지 않습니다.</figcaption>
+      </figure>
+      <figure class="cut c-mint">
+        <span class="cut-n">2</span>
+        <div class="cut-scene">
+          <div class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="slide-scan"><img src="img/sample-slide.jpg" alt=""><span></span></div>
+        </div>
+        <figcaption><b>AI가 듣고, 봅니다.</b> 말을 받아적고 슬라이드의 글자를 읽어 한 흐름으로 합칩니다.</figcaption>
+      </figure>
+      <figure class="cut c-butter">
+        <span class="cut-n">3</span>
+        <div class="cut-scene">
+          <div class="mini-report">
+            <p class="mr-h">no-cache와 no-store</p>
+            <p class="mr-li">저장은 하되 쓸 때마다 서버에 확인 <span class="chip">▶ 01:58</span></p>
+            <p class="mr-li">아예 저장하지 않음 <span class="chip">▶ 02:15</span></p>
+            <p class="mr-warn">! 슬라이드엔 "1시간", 강사는 "하루"</p>
+          </div>
+        </div>
+        <figcaption><b>근거가 붙은 리포트가 됩니다.</b> 문장마다 영상 시각이 달리고, 자료와 말이 다르면 따로 표시합니다.</figcaption>
+      </figure>
+      <figure class="cut c-rose burst">
+        <span class="cut-n">4</span>
+        <div class="cut-bubble shout">3번 틀렸네.<br>02:04부터 다시 봐!</div>
+        <span class="peep left small" data-body="crossed" data-head="newbie" data-face="awe" data-halo="#ff9aa8"></span>
+        <span class="peep right small" data-body="pointing" data-head="mentor" data-face="explaining" data-halo="#ffd65a" data-flip></span>
+        <figcaption><b>퀴즈와 만화로 확인합니다.</b> 점수보다 "이 구간만 다시 보세요"를 먼저 알려 드립니다.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 결과물 조각 -->
+  <section class="peek" id="peek">
+    <h2>실제 결과물에서 가져온 조각</h2>
+    <div class="peek-row">
+      <article class="peek-card">
+        <p class="art-label">리포트</p>
+        <p class="art-h">Cache-Control 헤더를 통한 캐시 제어</p>
+        <p class="art-li">브라우저는 응답 헤더 <code>Cache-Control</code>로 저장본을 언제까지 쓸지 파악한다 <span class="chip">▶ 01:23</span></p>
+        <p class="art-li"><b>슬라이드에만 있음:</b> <code>s-maxage</code>는 공유 캐시 전용이다 <span class="chip">▶ 01:18</span></p>
+        <p class="art-warn">! 슬라이드에는 "3600초 = 1시간", 강사는 "하루 동안"이라고 말함</p>
+      </article>
+      <article class="peek-card">
+        <p class="art-label">퀴즈</p>
+        <p class="art-h">민감한 정보가 담긴 응답에 알맞은 설정은?</p>
+        <p class="art-choice wrong">no-cache <span>선택하신 답</span></p>
+        <p class="art-choice right">no-store <span>정답</span></p>
+        <p class="art-replay">▶ 다시 보기 02:04–02:41</p>
+      </article>
+      <article class="peek-card peek-comic">
+        <p class="art-label">만화</p>
+        <div class="peek-cut">
+          <div class="cut-bubble shout">저장은 하되,<br>매번 물어보는 거야!</div>
+          <span class="peep left small" data-body="whatever" data-head="newbie" data-face="awe" data-halo="#ff9aa8"></span>
+          <span class="peep right small" data-body="pointing" data-head="mentor" data-face="explaining" data-halo="#ffd65a" data-flip></span>
+        </div>
+      </article>
+    </div>
+    <p class="peek-more"><a class="btn" href="#demo">예시 전체를 영상과 함께 보기 →</a></p>
+  </section>
+
   <footer class="foot">
     <p>영상 리포트북 · 데모 버전 · <a href="https://github.com/JeongWoobin335/video-report-book" target="_blank" rel="noopener">소스 코드</a></p>
-    <p>만화 캐릭터: Open Peeps (Pablo Stanley, CC0)</p>
+    <p>그림: Open Peeps (Pablo Stanley, CC0)</p>
   </footer>
 </div>
+
+<!-- 메인 화면의 인물: Open Peeps 파츠(몸·머리·얼굴)를 겹쳐 그린다 -->
+<script>
+  document.querySelectorAll(".peep").forEach(function (el) {
+    var d = el.dataset, w = d.body === "pointing" ? 900 : 818;
+    el.innerHTML = '<svg viewBox="-75 0 1000 1200" aria-hidden="true"><circle cx="425" cy="560" r="430" fill="' + d.halo + '" opacity=".55"/>' +
+      "<g" + ("flip" in d ? ' transform="translate(850 0) scale(-1 1)"' : "") + ">" +
+      '<image href="img/peeps/body-' + d.body + '.svg" x="16" y="467" width="' + w + '" height="733"/>' +
+      '<image href="img/peeps/head-' + d.head + '.svg" x="190" y="40" width="473" height="567"/>' +
+      '<image href="img/peeps/face-' + d.face + '.svg" x="349" y="226" width="289" height="293"/></g></svg>';
+  });
+</script>
 
 <!-- 2. 만드는 중 -->
 <div id="view-progress" class="making" hidden>
