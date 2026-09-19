@@ -1,2 +1,2 @@
 {"id": "demo", "state": "done", "title": "HTTP 캐싱 기초", "type": "education", "failed_parts": [], "outputs": ["report", "quiz", "comic"],
- "video": "../samples/lecture-http-caching.mp4"}
+ "video": "../samples/lecture-http-caching.mp4", "poster": "demo/frames/0001.jpg"}

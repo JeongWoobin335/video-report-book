@@ -1,6 +1,6 @@
 // 화면의 흐름: 올리기 → 만드는 중 → 결과.  작업 ID를 주소의 #job=… 에 두어서, 새로고침해도 결과로 돌아온다.
-import { API_BASE } from "./config.js?v=202609200328";
-import { probe, extractKeyframes, extractAudio, submitJob } from "./preprocess.js?v=202609200328";
+import { API_BASE } from "./config.js?v=202609200429";
+import { probe, extractKeyframes, extractAudio, submitJob } from "./preprocess.js?v=202609200429";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -10,7 +10,7 @@ const mmss = (sec) => {
   const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
   return (h ? h + ":" : "") + String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
 };
-const ASSET_V = "202609200328";  // tools/stamp_version.py가 채운다 — 예시 결과물(demo/)도 화면과 같은 판으로 받게
+const ASSET_V = "202609200429";  // tools/stamp_version.py가 채운다 — 예시 결과물(demo/)도 화면과 같은 판으로 받게
 const TYPE_LABEL = { meeting: "회의", education: "교육·강의", general: "일반" };
 
 let file = null;      // 사용자가 고른 영상 (이 기기 안에만 있다)
@@ -267,6 +267,7 @@ function showResult(status, demo = false) {
   $("result-meta").textContent = (TYPE_LABEL[status.type] || "") + (status.failed_parts.length ? " · 일부를 만들지 못했습니다: " + status.failed_parts.join(", ") : "");
   if (demo) {
     $("result-meta").textContent += " · 미리 만들어 둔 예시";
+    if (status.poster) $("player").poster = status.poster;  // 재생 전에 검은 화면 대신 첫 슬라이드
     attachVideo(status.video);
   } else if (file) attachVideo(file);
 
@@ -342,7 +343,7 @@ async function buildToc(base, v, openReport) {
 }
 
 async function loadQuiz(status, demo) {
-  const quiz = demo ? await fetch("demo/quiz.json?v=202609200328").then((r) => r.json()) : await api(`/api/jobs/${status.id}/files/quiz.public.json`);
+  const quiz = demo ? await fetch("demo/quiz.json?v=202609200429").then((r) => r.json()) : await api(`/api/jobs/${status.id}/files/quiz.public.json`);
   const meeting = quiz.type === "meeting";
   const answers = {};
   $("quiz").innerHTML =
@@ -418,7 +419,7 @@ initUpload();
 initResult();
 const jobId = (location.hash.match(/job=([A-Za-z0-9_-]+)/) || [])[1];
 if (location.hash === "#demo") {
-  fetch("demo/status.json?v=202609200328").then((r) => r.json()).then((s) => showResult(s, true)).catch(fail);
+  fetch("demo/status.json?v=202609200429").then((r) => r.json()).then((s) => showResult(s, true)).catch(fail);
 } else if (jobId) {
   show("view-progress");
   follow(jobId).catch(fail);
