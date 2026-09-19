@@ -1,6 +1,6 @@
 // 화면의 흐름: 올리기 → 만드는 중 → 결과.  작업 ID를 주소의 #job=… 에 두어서, 새로고침해도 결과로 돌아온다.
-import { API_BASE } from "./config.js";
-import { probe, extractKeyframes, extractAudio, submitJob } from "./preprocess.js";
+import { API_BASE } from "./config.js?v=202609200328";
+import { probe, extractKeyframes, extractAudio, submitJob } from "./preprocess.js?v=202609200328";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -10,6 +10,7 @@ const mmss = (sec) => {
   const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
   return (h ? h + ":" : "") + String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
 };
+const ASSET_V = "202609200328";  // tools/stamp_version.py가 채운다 — 예시 결과물(demo/)도 화면과 같은 판으로 받게
 const TYPE_LABEL = { meeting: "회의", education: "교육·강의", general: "일반" };
 
 let file = null;      // 사용자가 고른 영상 (이 기기 안에만 있다)
@@ -261,6 +262,7 @@ function attachVideo(f) {  // 사용자가 고른 파일, 또는 예시 영상�
 function showResult(status, demo = false) {
   show("view-result");
   const base = demo ? "demo/" : `${API_BASE}/api/jobs/${status.id}/files/`;
+  const v = demo ? "?v=" + ASSET_V : "";
   $("result-title").textContent = status.title || "리포트";
   $("result-meta").textContent = (TYPE_LABEL[status.type] || "") + (status.failed_parts.length ? " · 일부를 만들지 못했습니다: " + status.failed_parts.join(", ") : "");
   if (demo) {
@@ -269,13 +271,13 @@ function showResult(status, demo = false) {
   } else if (file) attachVideo(file);
 
   const tabs = [];
-  if (status.outputs.includes("report")) tabs.push({ key: "report", label: "리포트", src: base + "report.html" });
+  if (status.outputs.includes("report")) tabs.push({ key: "report", label: "리포트", src: base + "report.html" + v });
   if (status.outputs.includes("quiz")) tabs.push({ key: "quiz", label: status.type === "meeting" ? "내용 확인" : "퀴즈" });
-  if (status.outputs.includes("comic")) tabs.push({ key: "comic", label: "만화", src: base + "comic.html" });
+  if (status.outputs.includes("comic")) tabs.push({ key: "comic", label: "만화", src: base + "comic.html" + v });
   $("tabs").innerHTML = tabs.map((t, i) => `<button data-key="${t.key}" class="${i ? "" : "on"}">${t.label}</button>`).join("") +
-    (status.outputs.includes("report") ? `<a class="pdf" href="${base}report.html" target="_blank" rel="noopener">리포트 PDF로 저장 ↗</a>` : "");
+    (status.outputs.includes("report") ? `<a class="pdf" href="${base}report.html${v}" target="_blank" rel="noopener">리포트 PDF로 저장 ↗</a>` : "");
 
-  if (status.outputs.includes("report")) buildToc(base, () => open("report")).catch(() => {});
+  if (status.outputs.includes("report")) buildToc(base, v, () => open("report")).catch(() => {});
 
   let quizLoaded = false;
   const open = (key) => {
@@ -309,8 +311,8 @@ function gradeLocally(quiz, answers) {
 }
 
 // 영상 아래의 목차: 리포트의 섹션과 그 대목이 시작하는 시각. 누르면 영상도 문서도 그리로 간다.
-async function buildToc(base, openReport) {
-  const report = await fetch(base + "report.json").then((r) => { if (!r.ok) throw new Error(); return r.json(); });
+async function buildToc(base, v, openReport) {
+  const report = await fetch(base + "report.json" + v).then((r) => { if (!r.ok) throw new Error(); return r.json(); });
   const rows = [];
   let top = 0;
   for (const sec of report.sections) {
@@ -340,7 +342,7 @@ async function buildToc(base, openReport) {
 }
 
 async function loadQuiz(status, demo) {
-  const quiz = demo ? await fetch("demo/quiz.json").then((r) => r.json()) : await api(`/api/jobs/${status.id}/files/quiz.public.json`);
+  const quiz = demo ? await fetch("demo/quiz.json?v=202609200328").then((r) => r.json()) : await api(`/api/jobs/${status.id}/files/quiz.public.json`);
   const meeting = quiz.type === "meeting";
   const answers = {};
   $("quiz").innerHTML =
@@ -416,7 +418,7 @@ initUpload();
 initResult();
 const jobId = (location.hash.match(/job=([A-Za-z0-9_-]+)/) || [])[1];
 if (location.hash === "#demo") {
-  fetch("demo/status.json").then((r) => r.json()).then((s) => showResult(s, true)).catch(fail);
+  fetch("demo/status.json?v=202609200328").then((r) => r.json()).then((s) => showResult(s, true)).catch(fail);
 } else if (jobId) {
   show("view-progress");
   follow(jobId).catch(fail);

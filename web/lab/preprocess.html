@@ -66,9 +66,9 @@
   </div>
 </main>
 
-<script src="../vendor/lame.min.js"></script>
+<script src="../vendor/lame.min.js?v=202609200328"></script>
 <script type="module">
-  import { probe, extractKeyframes, extractAudio, submitJob } from "../js/preprocess.js";
+  import { probe, extractKeyframes, extractAudio, submitJob } from "../js/preprocess.js?v=202609200328";
   const $ = (id) => document.getElementById(id);
   const mmss = (s) => String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(Math.floor(s % 60)).padStart(2, "0");
   let file = null, result = null;
